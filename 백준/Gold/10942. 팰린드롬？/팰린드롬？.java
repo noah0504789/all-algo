@@ -13,30 +13,28 @@ public class Main {
         
         for (int i = 0; i < n; i++) nums[i] = readInt();
         
+        for (int i = 0; i < n; i++) dp[i][i] = true;
+        for (int i = 0; i < n-1; i++) {
+            if (nums[i] == nums[i+1]) dp[i][i+1] = true;
+        }
+        
+        for (int length = 2; length <= n; length++) {
+            for (int i = 0; i < n-length; i++) {
+                int j = i+length;
+                if (nums[i] == nums[j] && dp[i+1][j-1]) dp[i][j] = true;
+            }
+        }
+        
         m = readInt();
         
         for (int i = 0; i < m; i++) {
             s = readInt()-1;
             e = readInt()-1;
             
-            result = isPalindrome() ? 1 : 0;
-            
-            sb.append(result).append('\n');
+            sb.append(dp[s][e] ? 1 : 0).append('\n');
         }        
         
         System.out.print(sb);
-    }
-    
-    private static boolean isPalindrome() {
-        int left = s, right = e;
-        while (left < right) {
-            if (dp[left][right]) return true;
-            if (nums[left] != nums[right]) return dp[s][e] = false;
-            left++;
-            right--;
-        }
-        
-        return dp[s][e] = true;
     }
     
     private static int readInt() throws IOException {
