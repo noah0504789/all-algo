@@ -1,40 +1,56 @@
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {  
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int maxMeeting = Integer.parseInt(br.readLine());        
-        int[][] meetings = new int[maxMeeting][2];
+    private static Meeting[] list;
+    private static int n;
 
-        StringTokenizer st;     
-        for (int i = 0; i < maxMeeting; i++) {
-            st = new StringTokenizer(br.readLine());            
-            meetings[i][0] = Integer.parseInt(st.nextToken());
-            meetings[i][1] = Integer.parseInt(st.nextToken());
-        }
-        
-        Arrays.sort(meetings, (m1, m2) -> {
-            if (m1[1] == m2[1]) {
-                return m1[0] - m2[0];
-            }
-            return m1[1] - m2[1];
-        });
-        
-        int cnt = 0;
-        int end = 0;
+    public static void main(String... args) throws IOException {
+        n = readInt();
 
-        for (int i = 0; i < maxMeeting; i++) {
-            if(end <= meetings[i][0]) {
-                end = meetings[i][1];
+        list = new Meeting[n];
+        for (int i = 0; i < n; i++) list[i] = new Meeting(readInt(), readInt());
+
+        Arrays.sort(list);
+
+        int cnt = 0, minIdx = 0, maxEnd = 0;
+
+        while (minIdx < n) {
+            if (list[minIdx].start >= maxEnd) {
+                maxEnd = list[minIdx].end;
                 cnt++;
             }
+
+            minIdx++;
         }
-        System.out.println(cnt);
-    }    
+
+        System.out.print(cnt);
+    }
+
+    private static int readInt() throws IOException {
+        int result = 0, c = System.in.read();
+
+        while (c <= ' ') c = System.in.read();
+
+        while (c >= '0' && c <= '9') {
+            result *= 10;
+            result += c - '0';
+            c = System.in.read();
+        }
+
+        return result;
+    }
+    
+    static class Meeting implements Comparable<Meeting> {
+        final int start, end;
+
+        Meeting (int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        public int compareTo(Meeting other) {
+            return this.end == other.end ? Integer.compare(this.start, other.start) : Integer.compare(this.end, other.end);
+        }
+    }
 }
