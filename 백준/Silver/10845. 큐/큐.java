@@ -62,7 +62,7 @@ public class Main {
         }
 
         public int pollFirst() {
-            //emptyCheck();
+            emptyCheck();
             
             int result = arr[front++];
             
@@ -72,13 +72,13 @@ public class Main {
         }
         
         public int peekFirst() {
-            //emptyCheck();
+            emptyCheck();
             
             return arr[front];
         }
         
         public int peekLast() {
-            //emptyCheck();
+            emptyCheck();
             
             return arr[(rear-1+arr.length)%arr.length];
         }        
