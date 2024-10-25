@@ -3,7 +3,9 @@ import java.util.*;
 
 public class Main {
     
+    private static boolean[] noPrime;
     private static int n;
+    
     
     public static void main(String... args) throws IOException {
         n = readInt();
@@ -11,6 +13,15 @@ public class Main {
         if (n == 1) {
             System.out.print(2);
             System.exit(0);
+        }
+        
+        noPrime = new boolean[2_000_001];
+        noPrime[0] = noPrime[1] = true;
+        
+        for (int i = 2; i <= Math.sqrt(2_000_000); i++) {
+            if (noPrime[i]) continue;
+            
+            for (int j = i * i; j <= 2_000_000; j += i) noPrime[j] = true;
         }
                 
         while (true) {
@@ -23,21 +34,19 @@ public class Main {
     }
     
     public static boolean isPrime(int n) {
-        for (int i = 2; i <= Math.sqrt(n); i++) {
-            if (n % i == 0) return false;
-        }
-        
-        return true;
+        return !noPrime[n];
     }
     
     public static boolean isPalidrome(int n) {
-        String str = String.valueOf(n);
+        int N = n, k = 0;
         
-        for (int i = 0; i < str.length()/2; i++) {
-            if (str.charAt(i) != str.charAt(str.length()-1-i)) return false;
+        while (N > 0) {
+            k *= 10;
+            k += N % 10;
+            N /= 10;
         }
-        
-        return true;
+
+        return n == k;
     }
     
     public static int readInt() throws IOException {
