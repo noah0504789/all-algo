@@ -9,6 +9,7 @@ public class Main {
     private static BitSet visited, connected;
     private static Queue<Integer> queue;
     private static char[][] board;
+    private static int ans;
 
     public static void main(String... args) throws IOException {
         br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,6 +21,7 @@ public class Main {
         visited = new BitSet();
         connected = new BitSet();
         queue = new LinkedList<>();
+        ans = 0;
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
@@ -29,21 +31,23 @@ public class Main {
             }
         }
 
-        System.out.print(set.size());
+//        System.out.print(set.size());
+        System.out.print(ans);
     }
 
     private static void dfs(int r, int c, int depth, int dCnt) {
         if (depth == 7) {
             if (dCnt < 4) return;
-            if (set.contains(visited)) return;
+//            if (set.contains(visited)) return;
             if (!isConnected()) return;
 
-            set.add((BitSet) visited.clone());
+//            set.add((BitSet) visited.clone());
 
+            ans++;
             return;
         }
 
-        for (int i = r*5+c+1; i < 25; i++) {
+        for (int i = r*5+c; i < 25; i++) {
             if (visited.get(i)) continue;
 
             visited.set(i);
