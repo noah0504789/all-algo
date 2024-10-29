@@ -57,8 +57,7 @@ public class Main {
 
         public void put(String key, boolean value) {
             int idx = hash(key) % size;
-            Node cur = arr[idx];
-            Node newNode = new Node(key, true);
+            Node cur = arr[idx], newNode = new Node(key, true);
             
             if (cur == null) {
                 arr[idx] = newNode;
@@ -104,6 +103,7 @@ public class Main {
                 if (cur.key.equals(key)) {
                     if (prev == null) arr[idx] = cur.next;
                     else prev.next = cur.next;
+                    
                     return;
                 }
                 
