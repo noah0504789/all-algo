@@ -24,16 +24,18 @@ public class Main {
             int newItem = a[i];
             
             while (j >= 0 && a[j] > newItem) {
-                a[j+1] = a[j];
-                if (a[i] == b[i] && Arrays.equals(a, b)) {
+                a[j+1] = a[j];                
+                j--;
+                
+                if (Arrays.equals(a, b)) {
                     System.out.print(1);
                     return;
                 }
-                j--;
             }
             
             a[j+1] = newItem;
-            if (a[i] == b[i] && Arrays.equals(a, b)) {
+            
+            if (Arrays.equals(a, b)) {
                 System.out.print(1);
                 return;
             }            
