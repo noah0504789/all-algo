@@ -2,31 +2,49 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
+    private static Map<Integer, Integer> map, sortedMap;
+    private static int[] nums, sortedNums;
+    private static int n, max;
+
+    public static void main(String... args) throws IOException {
+        n = readInt();
+
+        nums = new int[n];
+        map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            nums[i] = readInt();
+            map.put(nums[i], i);
+        }
+
+        Arrays.sort(nums);
         
-        String[] input = br.readLine().split(" ");
-        int[] arr = new int[N];
-        Map<Integer, Integer> notSortArr = new HashMap<>();
+        sortedMap = new HashMap<>();
+        for (int i = 0; i < n; i++) sortedMap.put(nums[i], i);
+
+        max = 0;
+
+        for (int num : nums) max = Math.max(max, map.get(num) - sortedMap.get(num));
+
+        System.out.println(max);
+    }
+    
+    public static int readInt() throws IOException {
+        int r = 0, c = System.in.read();
         
-        for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(input[i]);
-            notSortArr.put(arr[i], i);
+        while (c <= ' ') c = System.in.read();
+        
+        boolean negative = false;
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
         }
         
-        Arrays.sort(arr);
-        Map<Integer, Integer> sortArr = new HashMap<>();
-        
-        for (int j = 0; j < N; j++) {
-            sortArr.put(arr[j], j);
+        while (c >= '0' && c <= '9') {
+            r *= 10;
+            r += c - '0';
+            c = System.in.read();
         }
         
-        int result = 0;
-        for (int k : arr) {
-            result = Math.max(result, notSortArr.get(k) - sortArr.get(k));
-        }
-        
-        System.out.println(result);
+        return negative ? -r : r;
     }
 }
