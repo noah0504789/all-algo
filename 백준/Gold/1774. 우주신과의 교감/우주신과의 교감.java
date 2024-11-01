@@ -22,19 +22,21 @@ public class Main {
 
         Collections.sort(edges);
 
-        sum = 0;
+        cnt = 0;
         disjointSet = new DisjointSet(n);
         for (int i = 0; i < m; i++) {
             int src = readInt(), dest = readInt();
-            disjointSet.union(src, dest);
+            if (!disjointSet.union(src, dest)) continue;
+            
+            cnt++;
         }
 
-        cnt = m;
+        sum = 0;        
         for (Edge edge : edges) {
             if (!disjointSet.union(edge.src, edge.dest)) continue;
 
             sum += edge.weight;
-            //if (++cnt == n-1) break;
+            if (++cnt == n-1) break;
         }
 
         System.out.printf("%.2f", sum);
