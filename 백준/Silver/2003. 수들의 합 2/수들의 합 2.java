@@ -14,25 +14,15 @@ public class Main {
         for (int i = 0; i < n; i++) nums[i] = readInt();
 
         cnt = 0;
+        l = r = 0;
 
-        l = 0;
+        sum = nums[l];
+        
         while (l < n) {
-            sum = nums[l];
-            r = l + 1;
-
-            while (l <= r) {
-                if (sum == m) {
-                    cnt++;
-                    break;
-                } else if (sum < m) {
-                    if (r >= n) break;
-                    sum += nums[r++];
-                } else {
-                    sum -= nums[l++];
-                }
-            }
-
-            l++;
+            if (sum == m) cnt++;
+            
+            if (sum < m && r + 1 < n) sum += nums[++r];
+            else sum -= nums[l++];
         }
 
         System.out.print(cnt);
