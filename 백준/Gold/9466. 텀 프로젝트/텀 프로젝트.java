@@ -4,7 +4,7 @@ import java.util.*;
 public class Main {
     private static StringBuilder sb;
 
-    private static BitSet visited, finished;
+    private static boolean[] visited, finished;
     private static int[] nums;
     private static int tc, n, cnt, next;
 
@@ -13,14 +13,11 @@ public class Main {
 
         tc = readInt();
 
-        visited = new BitSet();
-        finished = new BitSet();
-
         for (int i = 0; i < tc; i++) {
             n = readInt();
 
-            visited.clear();
-            finished.clear();
+            visited = new boolean[n+1];
+            finished = new boolean[n+1];
             
             nums = new int[n+1];
             
@@ -29,7 +26,7 @@ public class Main {
             cnt = 0;
 
             for (int k = 1; k <= n; k++) {
-                if (visited.get(k)) continue;
+                if (visited[k]) continue;
                 
                 dfs(k);
             }
@@ -41,17 +38,17 @@ public class Main {
     }
 
     public static void dfs(int start) {
-        visited.set(start);
+        visited[start] = true;
         next = nums[start];
         
-        if (!visited.get(next)) {
+        if (!visited[next]) {
             dfs(next);
-        } else if (!finished.get(next)) {
+        } else if (!finished[next]) {
             cnt++;
             for (int nxt = next; nxt != start; nxt = nums[nxt]) cnt++;
         }
         
-        finished.set(start);
+        finished[start] = true;
     }
 
     public static int readInt() throws IOException {
