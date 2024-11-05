@@ -4,8 +4,10 @@ import java.util.*;
 public class Main {
     private static final int[][] DIRS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-    private static Queue<int[]> queue, list;
-    private static Set<Integer> visited;
+    private static Queue<int[]> queue;
+//    private static Set<Integer> visited;
+    private static List<int[]> list;
+    private static BitSet visited;
     private static int[][] board;
     private static int n, m, sr, sc, cr, cc, cnt, ans;
 
@@ -28,9 +30,10 @@ public class Main {
             }
         }
 
-        visited = new HashSet<>();
+//        visited = new HashSet<>();
+        visited = new BitSet();
         queue = new ArrayDeque<>();
-        list = new ArrayDeque<>();
+        list = new ArrayList<>();
 
         ans = 0;
 
@@ -50,16 +53,17 @@ public class Main {
     }
 
     public static void melt() {
+        list.clear();
+
         for (int r = 0; r < n; r++) {
             for (int c = 0; c < m; c++) {
                 if (board[r][c] == 0) continue;
 
-                list.offer(new int[]{r, c, nearCnt(r, c)});
+                list.add(new int[]{r, c, nearCnt(r, c)});
             }
         }
 
-        while (!list.isEmpty()) {
-            int[] arr = list.poll();
+        for (int[] arr : list) {
             int r = arr[0], c = arr[1], minusCnt = arr[2];
 
             board[r][c] -= minusCnt;
@@ -89,9 +93,11 @@ public class Main {
     }
 
     public static int bfs() {
-        visited.clear();
-        visited.add(sr * m + sc);
+//        visited.clear();
+//        visited.add(sr * m + sc);
         queue.offer(new int[]{sr, sc});
+        visited.clear();
+        visited.set(sr * m + sc);
 
         int cnt = 0;
 
@@ -108,8 +114,8 @@ public class Main {
 
                 if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
                 if (board[nr][nc] == 0) continue;
-                if (visited.contains(nr * m + nc)) continue;
-                visited.add(nr * m + nc);
+                if (visited.get(nr * m + nc)) continue;
+                visited.set(nr * m + nc);
 
                 queue.offer(new int[]{nr, nc});
             }
