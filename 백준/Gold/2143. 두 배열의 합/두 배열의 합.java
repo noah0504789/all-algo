@@ -3,7 +3,6 @@ import java.util.*;
 
 public class Main {
     private static Map<Integer, Integer> map;
-    private static List<Integer> list;
     private static int[] a, b;
     private static int t, n, m, aSum, bSum;
     private static long ans;
@@ -23,15 +22,6 @@ public class Main {
 
         ans = 0;
 
-        list = new ArrayList<>();
-        for (int l = 0; l < n; l++) {
-            aSum = 0;
-            for (int r = l; r < n; r++) {
-                aSum += a[r];
-                list.add(aSum);
-            }
-        }
-
         map = new HashMap<>();
         for (int l = 0; l < m; l++) {
             bSum = 0;
@@ -41,7 +31,13 @@ public class Main {
             }
         }
 
-        for (int aSum : list) ans += map.getOrDefault(t-aSum, 0);
+        for (int l = 0; l < n; l++) {
+            aSum = 0;
+            for (int r = l; r < n; r++) {
+                aSum += a[r];
+                ans += map.getOrDefault(t-aSum, 0);
+            }
+        }
 
         System.out.print(ans);
     }
