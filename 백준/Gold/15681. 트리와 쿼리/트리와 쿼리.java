@@ -4,7 +4,7 @@ import java.util.*;
 public class Main {
     private static StringBuilder sb;
 
-    private static List<List<Integer>> graph;
+    private static List<Integer>[] graph;
     private static int[] dp;
     private static int n, root, q, src, dest;
 
@@ -15,16 +15,16 @@ public class Main {
         root = readInt();
         q = readInt();
 
-        graph = new ArrayList<>();
+        graph = new ArrayList[n+1];
 
-        for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());
+        for (int i = 0; i <= n; i++) graph[i] = new ArrayList<>();
 
         for (int i = 0; i < n-1; i++) {
             src = readInt();
             dest = readInt();
 
-            graph.get(src).add(dest);
-            graph.get(dest).add(src);
+            graph[src].add(dest);
+            graph[dest].add(src);
         }
 
         dp = new int[n+1];
@@ -39,7 +39,7 @@ public class Main {
     public static int postOrder(int node, int parent) {
         int cnt = 1;
 
-        for (int child : graph.get(node)) {
+        for (int child : graph[node]) {
             if (child == parent) continue;
 
             cnt += postOrder(child, node);
