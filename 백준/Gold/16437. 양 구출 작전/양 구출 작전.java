@@ -8,6 +8,7 @@ public class Main {
     private static List<List<Integer>> list;
     private static char[] types;
     private static char type;
+    private static long[] dp;
     private static int[] counts;
     private static int n, cnt, parent, ans, curCnt;
 
@@ -22,6 +23,7 @@ public class Main {
         
         types = new char[n+1];
         counts = new int[n+1];
+        dp = new long[n+1];
 
         for (int i = 2; i <= n; i++) {
             st = new StringTokenizer(br.readLine());
@@ -32,20 +34,22 @@ public class Main {
                         
             types[i] = type;
             counts[i] = cnt;
+            dp[i] = type == 'S' ? cnt : -cnt;
             
             list.get(parent).add(i);
-        }
+        }                
         
-        System.out.print(dfs(1));
+        dfs(1, -1);
+        
+        System.out.print(dp[1]);
     }
 
-    public static long dfs(int node) {
-        long sum = 0;
+    public static void dfs(int node, int parent) {
+        for (int child : list.get(node)) dfs(child, node);
         
-        for (int child : list.get(node)) sum += dfs(child);
+        if (parent == -1) return;        
+        if (dp[node] <= 0) return;
         
-        if (types[node] == 'S') return sum + counts[node];
-        
-        return sum - counts[node] > 0 ? sum - counts[node] : 0;
+        dp[parent] += dp[node];
     }
 }
