@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static List<Integer> list;
+    private static TreeSet<Integer> tree;
     private static long ans;
     private static int[] height;
     private static int n;
@@ -10,39 +10,25 @@ public class Main {
     public static void main(String... args) throws IOException {
         n = readInt();
 
-        height = new int[n];
-        list = new ArrayList<>();
+        height = new int[n+2];
+        
+        tree = new TreeSet<>();
+        tree.add(0);
+        tree.add(n+1);              
         
         ans = 0;
 
-        for (int i = 0; i < n; i++) ans += getHeight(readInt());
-
-        System.out.print(ans);
-    }
-
-    public static int binarySearchLower(int left, int right, int key) {
-        while (left < right) {
-            int mid = (left + right) >>> 1;
-
-            if (list.get(mid) < key) left = mid + 1;
-            else right = mid;
+        for (int i = 0; i < n; i++) {
+            int node = readInt() + 1;
+            
+            height[node] = Math.max(height[tree.higher(node)], height[tree.lower(node)]) + 1;
+            
+            ans += height[node];
+            
+            tree.add(node);
         }
 
-        return right;
-    }
-
-    public static int getHeight(int node) {
-        int size = list.size();
-        
-        int lb = binarySearchLower(0, size, node);
-
-        int left = lb > 0 ? height[list.get(lb-1)] : 0;
-        int right = lb < size ? height[list.get(lb)] : 0;
-
-        height[node] = Math.max(left, right) + 1;
-        list.add(lb, node);
-
-        return height[node];
+        System.out.print(ans);
     }
 
     public static int readInt() throws IOException {
