@@ -2,19 +2,52 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static PriorityQueue<Integer> pq;
-    private static int n, ans;
+    private static PriorityQueue<Node> pq;
+    private static Node cur;
+    private static int[][] board;
+    private static int n, ans, r, c;
 
     public static void main(String... args) throws IOException {
         n = readInt();
+        
+        board = new int[n][n];
 
-        pq = new PriorityQueue<>(Comparator.reverseOrder());
+        pq = new PriorityQueue<>();
 
-        for (int i = 0; i < n * n; i++) pq.offer(readInt());
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                board[r][c] = readInt();
+                if (r == n-1) pq.offer(new Node(board[r][c], r, c));
+            }            
+        }
 
-        for (int i = 0; i < n; i++) ans = pq.poll();
-
+        while (n-- > 0) {
+            cur = pq.poll();
+            
+            ans = cur.val;
+            r = cur.r;
+            c = cur.c;
+            
+            if (r-1 < 0) continue;
+            
+            pq.offer(new Node(board[r-1][c], r-1, c));
+        }
+        
         System.out.print(ans);
+    }
+    
+    static class Node implements Comparable<Node> {
+        final int val, r, c;
+        
+        Node(int val, int r, int c) {
+            this.val = val;
+            this.r = r;
+            this.c = c;
+        }
+        
+        public int compareTo(Node o) {
+            return Integer.compare(o.val, this.val);
+        }
     }
 
     public static int readInt() throws IOException {
