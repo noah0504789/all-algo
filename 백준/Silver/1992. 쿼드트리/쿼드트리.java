@@ -1,71 +1,55 @@
+import java.io.*;
+import java.util.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+public class Main {        
+    private static BufferedReader br;
+    private static StringBuilder sb;
 
-/**
- * @author noah kim
- * @date 2024-02-19
- * @link https://www.acmicpc.net/problem/1992
- * @requirement 0과 1로 표현된 영상을 압축하여 표현하라.
- * @keyword
-    [영상]
-    - 크기: N*N
-    - 칸: 0 or 1
-    [압축]
-    - 순서: 왼쪽 위, 오른쪽 위, 왼쪽 아래, 오른쪽 아래
-    - 방식: 재귀적으로 전체 압축
- * @input
-    - N: 영상 크기(2의 제곱수. 1<=N<=64)
-    - 영상 정보
- * @output
- * @time_complex
- * @perf
- */
-public class Main {
-    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    private static final StringBuffer sb = new StringBuffer();
-    private static int[][] movies, dp;
-    private static int N;
+    private static char val;
+    private static char[][] board;
+    private static int n;
 
-    public static void main(String[] args) throws IOException {
-        N = Integer.parseInt(br.readLine());
-        movies = new int[N][N];
-        dp = new int[N][N];
-        for (int r = 0; r < N; r++) movies[r] = Arrays.stream(br.readLine().split("")).mapToInt(Integer::parseInt).toArray();
+    public static void main(String... args) throws IOException {
+        br = new BufferedReader(new InputStreamReader(System.in));
+        sb = new StringBuilder();
 
-        quad(0,0, N);
+        n = Integer.parseInt(br.readLine());
 
-        System.out.println(sb);
+        board = new char[n][n];
 
-        br.close();
+        for (int i = 0; i < n; i++) board[i] = br.readLine().toCharArray();
+
+        quadtree(0, 0, n);
+
+        System.out.print(sb);
     }
 
-    private static void quad(int r, int c, int size) {
+    private static void quadtree(int r, int c, int size) {
         if (isSame(r, c, size)) {
-            sb.append(movies[r][c]);
+            sb.append(board[r][c]);
             return;
         }
 
-        sb.append("(");
+        size /= 2;
 
-        int newSize = size / 2;
-        
-        quad(r,c, newSize);
-        quad(r,c+ newSize, newSize);
-        quad(r+ newSize,c, newSize);
-        quad(r+ newSize,c+ newSize, newSize);
+        sb.append('(');
 
-        sb.append(")");
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                int nr = r + i * size, nc = c + j * size;
+                quadtree(nr, nc, size);
+            }
+        }
+
+        sb.append(')');
     }
 
     private static boolean isSame(int r, int c, int size) {
-        int val = movies[r][c];
+        val = board[r][c];
 
-        for (int i = r; i < r+size; i++) {
-            for (int j = c; j < c+size; j++) {
-                if (movies[i][j] != val) return false;
+        for (int nr = r; nr < r + size; nr++) {
+            for (int nc = c; nc < c + size; nc++) {
+                if (board[nr][nc] != val) return false;
             }
         }
 
