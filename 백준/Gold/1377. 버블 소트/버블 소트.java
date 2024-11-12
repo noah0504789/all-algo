@@ -20,7 +20,11 @@ public class Main {
 
         max = 0;
 
-        for (int i = 0; i < n; i++) max = Math.max(max, arr[i].idx - i);
+        for (int i = 0; i < n; i++) {
+            if (arr[i].idx - i <= max) continue;
+            
+            max = arr[i].idx - i;
+        }
 
         bw.write(String.valueOf(max+1));
 
