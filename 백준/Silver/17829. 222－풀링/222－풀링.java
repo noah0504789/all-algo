@@ -4,7 +4,6 @@ import java.util.*;
 public class Main {
     private static BufferedWriter bw;
 
-    private static PriorityQueue<Integer> maxPQ;
     private static int[][] board;
     private static int n;
 
@@ -12,8 +11,6 @@ public class Main {
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         n = readInt();
-
-        maxPQ = new PriorityQueue<>(Collections.reverseOrder());
 
         board = new int[n][n];
 
@@ -28,38 +25,35 @@ public class Main {
 
     public static int polling(int r, int c, int size) {
         if (size == 2) {
-            maxPQ.clear();
+            int idx = 0;
+
+            int[] temp = new int[4];
 
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
                     int nr = r+i, nc = c+j;
 
-                    maxPQ.offer(board[nr][nc]);
+                    temp[idx++] = board[nr][nc];
                 }
             }
 
-            maxPQ.poll();
+            Arrays.sort(temp);
 
-            return maxPQ.poll();
+            return temp[2];
         }
 
         size /= 2;
 
-        int a1 = polling(r, c, size);
-        int a2 = polling(r+size, c, size);
-        int a3 = polling(r, c+size, size);
-        int a4 = polling(r+size, c+size, size);
+        int[] temp = new int[4];
 
-        maxPQ.clear();
+        temp[0] = polling(r, c, size);
+        temp[1] = polling(r+size, c, size);
+        temp[2] = polling(r, c+size, size);
+        temp[3] = polling(r+size, c+size, size);
 
-        maxPQ.offer(a1);
-        maxPQ.offer(a2);
-        maxPQ.offer(a3);
-        maxPQ.offer(a4);
+        Arrays.sort(temp);
 
-        maxPQ.poll();
-
-        return maxPQ.poll();
+        return temp[2];
     }
 
     public static int readInt() throws IOException {
