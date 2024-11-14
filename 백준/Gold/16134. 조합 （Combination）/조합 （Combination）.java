@@ -5,7 +5,8 @@ public class Main {
     private static BufferedWriter bw;
 
     private static final int MOD = 1_000_000_007;
-    private static int[][] dp;
+    private static long[] factArr;
+    private static long nF, rF, n_rF, rIF, n_rIF, ans;
     private static int n, r;
 
     public static void main(String... args) throws IOException {
@@ -14,20 +15,58 @@ public class Main {
         n = readInt();
         r = readInt();
 
-        dp = new int[n+1][r+1];
+        factArr = new long[n+1];
+        factArr[0] = factArr[1] = 1;
 
-        bw.write(comb(n, r)+"");
+        nF = factorial(n);
+        rF = factorial(r);
+        n_rF = factorial(n-r);
+
+        rIF = iFactorial(rF);
+        n_rIF = iFactorial(n_rF);
+
+        ans = (nF * rIF) % MOD;
+        ans *= n_rIF;
+        ans %= MOD;
+
+        bw.write(ans + "");
 
         bw.flush();
     }
 
-    private static int comb(int n, int r) {
-        if (n == 0) return 0;
-        if (r == 0 || n == r) return 1;
-        if (r == 1) return n;
-        if (dp[n][r] > 0) return dp[n][r];
+    private static long factorial(int n) {
+        if (factArr[n] > 0) return factArr[n];
 
-        return dp[n][r] = (comb(n-1, r) + comb(n-1, r-1)) % MOD;
+        long res = 1;
+
+        for (int i = 2; i <= n; i++) {
+            res *= i;
+            res %= MOD;
+
+            factArr[i] = res;
+        }
+
+        return factArr[n];
+    }
+
+    private static long iFactorial(long n) {
+        return modPow(n, MOD-2);
+    }
+
+    private static long modPow(long base, int exp) {
+        if (exp == 0 || exp == 1) return base;
+
+        long res = modPow(base, exp/2);
+
+        res *= res;
+        res %= MOD;
+
+        if (exp % 2 == 1) {
+            res *= base;
+            res %= MOD;
+        }
+
+        return res;
     }
 
     public static int readInt() throws IOException {
