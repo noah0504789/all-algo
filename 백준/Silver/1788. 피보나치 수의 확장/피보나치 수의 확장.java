@@ -5,7 +5,7 @@ public class Main {
     private static BufferedWriter bw;
 
     private static final int MOD = 1_000_000_000;
-    private static int[] dp;
+    private static final long[][] base = {{1, 1}, {1, 0}};
     private static int n, nAbs, sign, abs;
 
     public static void main(String... args) throws IOException {
@@ -17,8 +17,7 @@ public class Main {
         if (n == 0) {
             sign = abs = 0;
         } else {
-            dp = new int[nAbs+1];
-            abs = fibDP(nAbs);
+            abs = (int) pow(base, nAbs)[1][0];
             sign = 1;
 
             if (n < 0 && nAbs % 2 == 0) sign = -1;
@@ -31,13 +30,27 @@ public class Main {
         bw.flush();
     }
 
-    public static int fibDP(int n) {
-        if (n == 0) return 0;
-        if (n == 1) return 1;
+    public static long[][] pow(long[][] a, int exp) {
+        if (exp == 1) return a;
 
-        if (dp[n] > 0) return dp[n];
+        long[][] res = pow(a, exp/2);
 
-        return dp[n] = (fibDP(n-1) + fibDP(n-2)) % MOD;
+        res = mul(res, res);
+
+        if (exp % 2 == 1) res = mul(res, a);
+
+        return res;
+    }
+
+    private static long[][] mul(long[][] a, long[][] b) {
+        long[][] c = new long[2][2];
+        
+        c[0][0] = ((a[0][0]*b[0][0]) % MOD + (a[0][1]*b[1][0]) % MOD) % MOD;
+        c[0][1] = ((a[0][0]*b[0][1]) % MOD + (a[0][1]*b[1][1]) % MOD) % MOD;
+        c[1][0] = ((a[1][0]*b[0][0]) % MOD + (a[1][1]*b[1][0]) % MOD) % MOD;
+        c[1][1] = ((a[1][0]*b[0][1]) % MOD + (a[1][1]*b[1][1]) % MOD) % MOD;
+        
+        return c;
     }
 
     public static int readInt() throws IOException {
