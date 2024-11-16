@@ -4,7 +4,7 @@ import java.util.*;
 public class Main {
     private static BufferedWriter bw;
 
-    private static int[] times, points, dp;
+    private static int[] dp;
     private static int n, k;
 
     public static void main(String... args) throws IOException {
@@ -12,24 +12,18 @@ public class Main {
 
         n = readInt();
         k = readInt();
-
-        points = new int[k+1];
-        times = new int[k+1];
-
-        for (int i = 1; i <= k; i++) {
-            points[i] = readInt();
-            times[i] = readInt();
-        }
-
+        
         dp = new int[n+1];
 
         for (int i = 1; i <= k; i++) {
-            int time = times[i], point = points[i];
+            int point = readInt();
+            int time = readInt();            
 
-            for (int j = n; j > 0; j--) {
+            for (int j = n; j >= time; j--) {
                 if (j < time) continue;
+                if (dp[j] >= dp[j-time]+point) continue;
 
-                dp[j] = Math.max(dp[j], dp[j-time]+point);
+                dp[j] = dp[j-time]+point;
             }
         }
 
