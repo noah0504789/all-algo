@@ -21,11 +21,12 @@ public class Main {
 
         dp = new int[n+1][100];
         for (int i = 1; i <= n; i++) {
-            int ch = hp[i], ph = hp[i-1], cj = joy[i];
+            int ch = hp[i], cj = joy[i];
 
             for (int j = 1; j < 100; j++) {
-                if (j >= ch) dp[i][j] = Math.max(Math.max(dp[i][j-1], dp[i-1][j]), dp[i-1][j-ch] + cj);
-                else dp[i][j] = Math.max(dp[i][j-1], dp[i-1][j]);
+                dp[i][j] = Math.max(dp[i][j-1], dp[i-1][j]);
+
+                if (j >= ch) dp[i][j] = Math.max(dp[i][j], dp[i-1][j-ch] + cj);
             }
         }
 
