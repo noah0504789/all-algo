@@ -3,57 +3,72 @@ import java.util.*;
 
 public class Main {
     private static BufferedWriter bw;
+
     private static final int tc = 3;
-    private static int n, totalSum;
+    private static Coin[] coins;
     private static boolean[] dp;
+    private static int[] cnts;
+    private static int n, tot, coin, cnt, target;
 
     public static void main(String... args) throws IOException {
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         for (int i = 0; i < tc; i++) {
             n = readInt();
-            totalSum = 0;
-            List<Coin> coins = new ArrayList<>();
+
+            coins = new Coin[n];
+            tot = 0;
 
             for (int j = 0; j < n; j++) {
-                int value = readInt();
-                int count = readInt();
-                coins.add(new Coin(value, count));
-                totalSum += value * count;
-            }
+                coins[j] = new Coin(readInt(), readInt());
 
-            if (totalSum % 2 != 0) {
-                bw.write("0\n");
+                tot += coins[j].sum();
+            }
+            
+            if (tot % 2 != 0) {
+                bw.write("0");
+                bw.write("\n");
                 continue;
             }
 
-            int target = totalSum / 2;
+            target = tot / 2;
             dp = new boolean[target + 1];
             dp[0] = true;
+            cnts = new int[target + 1];
 
-            for (Coin coin : coins) {
-                for (int j = target; j >= coin.value; j--) {
-                    for (int k = 1; k <= coin.count && k * coin.value <= j; k++) {
-                        if (dp[j - k * coin.value]) {
-                            dp[j] = true;
-                            break;
-                        }
-                    }
+            for (Coin cur : coins) {
+                coin = cur.type;
+                cnt = cur.cnt;
+
+                Arrays.fill(cnts, 0);
+
+                for (int j = 0; j <= target - coin; j++) {
+                    if (!dp[j]) continue;
+                    if (dp[j+coin]) continue;
+                    if (cnts[j] >= cnt) continue;
+
+                    dp[j+coin] = true;
+                    cnts[j+coin] = cnts[j] + 1;
                 }
             }
 
-            bw.write(dp[target] ? "1\n" : "0\n");
+            bw.write(dp[target] ? "1" : "0");
+            bw.write("\n");
         }
 
         bw.flush();
     }
 
     static class Coin {
-        int value, count;
+        final int type, cnt;
 
-        Coin(int value, int count) {
-            this.value = value;
-            this.count = count;
+        public Coin(int type, int cnt) {
+            this.type = type;
+            this.cnt = cnt;
+        }
+
+        public int sum() {
+            return type*cnt;
         }
     }
 
