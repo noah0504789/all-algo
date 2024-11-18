@@ -45,7 +45,7 @@ public class Main {
                 for (int j = 0; j <= target - coin; j++) {
                     if (!dp[j]) continue;
                     if (dp[j+coin]) continue;
-                    if (cnts[j] >= cnt) continue;
+                    if (cnts[j] == cnt) continue;
 
                     dp[j+coin] = true;
                     cnts[j+coin] = cnts[j] + 1;
