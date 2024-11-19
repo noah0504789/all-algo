@@ -4,8 +4,7 @@ import java.util.*;
 public class Main {
     private static BufferedWriter bw;
 
-    private static List<Integer> list;
-    private static int[] a;
+    private static int[] a, dp;
     private static int n;
 
     public static void main(String... args) throws IOException {
@@ -16,23 +15,34 @@ public class Main {
         a = new int[n];
         for (int i = 0; i < n; i++) a[i] = readInt();
         
-        list = new ArrayList<>();
+        dp = new int[n];
         
-        bw.write(lis(a)+"");
+        bw.write(lis()+"");
 
         bw.flush();
     }
     
-    private static int lis(int[] a) {
-        for (int num : a) {
-            int pos = Collections.binarySearch(list, num);
-            if (pos < 0) pos = -(pos+1);
-            
-            if (pos >= list.size()) list.add(num);
-            else list.set(pos, num);
+    private static int lis() {
+        int idx = 0;
+        dp[idx] = a[0];
+        
+        for (int i = 1; i < n; i++) {
+            int num = a[i];
+            if (num > dp[idx]) dp[++idx] = num;
+            else if (num < dp[idx]) dp[lowerbound(0, idx, num)] = num;            
         }
         
-        return list.size();
+        return idx+1;
+    }
+    
+    private static int lowerbound(int l, int r, int key) {        
+        while (l < r) {
+            int mid = (l+r)/2;
+            if (dp[mid] < key) l = mid+1;
+            else r = mid;
+        }
+        
+        return l;
     }
 
     public static int readInt() throws IOException {
