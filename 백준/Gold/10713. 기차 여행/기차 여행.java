@@ -4,8 +4,9 @@ import java.util.*;
 public class Main {
     private static BufferedWriter bw;
 
-    private static int[] travels, tickets, icFees, icPrices;
-    private static int n, m, s, e, sum, cnt;
+    private static long[] travels, tickets, icFees, icPrices;
+    private static long sum, cnt;
+    private static int n, m, s, e;
 
     public static void main(String... args) throws IOException {
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -13,7 +14,7 @@ public class Main {
         n = readInt();
         m = readInt();
 
-        travels = new int[n+1];
+        travels = new long[n+1];
 
         s = readInt();
 
@@ -31,9 +32,9 @@ public class Main {
             s = e;
         }
 
-        tickets = new int[n];
-        icFees = new int[n];
-        icPrices = new int[n];
+        tickets = new long[n];
+        icFees = new long[n];
+        icPrices = new long[n];
 
         for (int i = 1; i < n; i++) {
             tickets[i] = readInt();
