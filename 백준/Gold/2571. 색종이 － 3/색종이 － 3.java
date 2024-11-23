@@ -6,7 +6,7 @@ public class Main {
 
     private static boolean[][] black;
     private static int[][] paper;
-    private static int n, x, y, ans, height;
+    private static int n, c, r, ans, height;
 
     public static void main(String[] args) throws Exception{
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -16,11 +16,11 @@ public class Main {
 
         n = readInt();
         while (n-- > 0) {
-            x = readInt();
-            y = readInt();
+            c = readInt();
+            r = readInt();
 
             for (int i = 1; i <= 10; i++) {
-                for (int j = 1; j <= 10; j++) black[x+i][y+j] = true;
+                for (int j = 1; j <= 10; j++) black[r+i][c+j] = true;
             }
 
             for (int i = 1; i <= 100; i++) {
@@ -43,7 +43,7 @@ public class Main {
                 }
             }
         }
-        
+
         bw.write(ans+"");
 
         bw.flush();
