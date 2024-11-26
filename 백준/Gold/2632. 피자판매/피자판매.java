@@ -29,7 +29,6 @@ public class Main {
         if (acc2[n] == tot) ans++;
 
         map = new HashMap<>();
-        map.put(acc1[m], 1);
 
         for (int i = 1; i <= m; i++) {
             for (int j = i; j < i+m-1; j++) {
@@ -40,7 +39,8 @@ public class Main {
                 map.put(sum, map.getOrDefault(sum, 0)+1);
             }
         }
-
+        
+        map.put(acc1[m], 1);
         ans += map.getOrDefault(tot-acc2[n], 0);
 
         for (int i = 1; i <= n; i++) {
