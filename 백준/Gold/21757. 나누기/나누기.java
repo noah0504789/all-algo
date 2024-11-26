@@ -4,48 +4,50 @@ import java.util.*;
 public class Main {
     private static BufferedWriter bw;
 
+    private static long[][] dp;
     private static long[] acc;
     private static int[] nums;
-    private static long sum1, sum2, sum3, sum4, ans;
+    private static long target;
     private static int n;
 
     public static void main(String... args) throws IOException {
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        ans = 0;
-
         n = readInt();
 
         nums = new int[n+1];
         acc = new long[n+1];
-        
+
         for (int i = 1; i <= n; i++) {
-            nums[i] = readInt();
-            acc[i] = acc[i-1] + nums[i];
+            acc[i] = readInt();
+            acc[i] += acc[i-1];
         }
 
-        for (int i = 1; i <= n-3; i++) {
-            sum1 = acc[i];
-            for (int j = i+1; j <= n-2; j++) {
-                sum2 = acc[j] - acc[i];
+        target = acc[n] / 4;
+        dp = new long[n+1][4];
 
-                if (sum1 != sum2) continue;
-                for (int k = j+1; k <= n-1; k++) {
-                    sum3 = acc[k] - acc[j];
+        bw.write(solve()+"");
+        bw.flush();
+    }
 
-                    if (sum2 != sum3) continue;
+    private static long solve() {
+        if (target % 4 != 0) return 0;
 
-                    sum4 = acc[n] - acc[k];
+        dp[0][0] = 1;
 
-                    if (sum3 != sum4) continue;
+        for (int i = 1; i <= n; i++) {
+            dp[i][0] = 1;
 
-                    ans++;
-                }
+            for (int j = 1; j <= 3; j++) {
+                dp[i][j] = dp[i-1][j];
+
+                if (acc[i] != target * j) continue;
+
+                dp[i][j] += dp[i-1][j-1];
             }
         }
 
-        bw.write(ans+"");
-        bw.flush();
+        return dp[n-1][3];
     }
 
     public static int readInt() throws IOException {
