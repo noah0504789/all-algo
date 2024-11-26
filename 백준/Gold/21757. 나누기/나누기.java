@@ -2,69 +2,43 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static BufferedWriter bw;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        
+        long[] num = new long[N+1];
+        long[] sum = new long[N+1];
 
-    private static long[][] dp;
-    private static long[] acc;
-    private static int[] nums;
-    private static long target;
-    private static int n;
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-    public static void main(String... args) throws IOException {
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-        n = readInt();
-
-        nums = new int[n+1];
-        acc = new long[n+1];
-
-        for (int i = 1; i <= n; i++) {
-            acc[i] = readInt();
-            acc[i] += acc[i-1];
+        for(int i=1;i<=N;i++){
+            num[i] = Long.parseLong(st.nextToken());
+            sum[i] = sum[i-1] + num[i];
         }
 
-        target = acc[n] / 4;
-        dp = new long[n+1][4];
+        long[][] dp = new long[N+1][4];
+        long count = 0;
 
-        bw.write(solve()+"");
-        bw.flush();
-    }
+        if(sum[N] %4 ==0){
+            long target = sum[N]/4;
 
-    private static long solve() {
-        if (target % 4 != 0) return 0;
+            dp[0][0] = 1;   //dp[1][1]이 가능한 경우을 위한 값
 
-        dp[0][0] = 1;
+            for(int i=1;i<=N;i++){
+                dp[i][0] = 1;   //dp[n][1]이 가능한 경우를 위한 값
+                for(int j=1;j<=3;j++){
+                    dp[i][j] = dp[i-1][j];  //이전까지 가능했던 경우의 수를 가져옴
 
-        for (int i = 1; i <= n; i++) {
-            dp[i][0] = 1;
-
-            for (int j = 1; j <= 3; j++) {
-                dp[i][j] = dp[i-1][j];
-
-                if (acc[i] != target * j) continue;
-
-                dp[i][j] += dp[i-1][j-1];
+                    if(sum[i] == target*j){ //현재까지의 누적합으로 부분 수열의 합이 가능하면
+                        //이전 크기의 부분 수열이 가능한 만큼 추가로 되는 경우의 수이다.
+                        dp[i][j] += dp[i-1][j-1];
+                    }
+                }
             }
+
+            count = dp[N-1][3];
         }
 
-        return dp[n-1][3];
-    }
-
-    public static int readInt() throws IOException {
-        int r = 0, c = System.in.read();
-
-        while (c <= ' ') c = System.in.read();
-        boolean negative = false;
-        if (c == '-') {
-            negative = true;
-            c = System.in.read();
-        }
-        while (c >= '0' && c <= '9') {
-            r *= 10;
-            r += c - '0';
-            c = System.in.read();
-        }
-
-        return negative ? -r : r;
+        System.out.println(count);
     }
 }
