@@ -20,14 +20,12 @@ public class Main {
         }
 
         dp = new int[n+1];
-        dp[1] = nums1[1];
         for (int i = 1; i <= n; i++) dp[i] = Math.max(dp[i-1] + nums1[i], nums1[i]);
 
         max = 0;
         for (int i = 1; i <= n; i++) max = Math.max(max, dp[i]);
 
         dp = new int[n+1];
-        dp[1] = nums2[1];
         for (int i = 1; i <= n; i++) dp[i] = Math.max(dp[i-1] + nums2[i], nums2[i]);
         
         for (int i = 1; i <= n; i++) max = Math.max(max, dp[i]);
