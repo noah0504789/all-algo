@@ -6,7 +6,7 @@ public class Main {
 
     private static int[][][] cnts;
     private static int[] cur, left, up, prev;
-    private static int n, q, r2, c2, r1, c1, ans;
+    private static int n, q, r2, c2, r1, c1, cnt, ans;
 
     public static void main(String... args) throws IOException {
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -30,18 +30,19 @@ public class Main {
             r2 = readInt();
             c2 = readInt();
 
-            cur = cnts[r2][c2].clone();
+            cur = cnts[r2][c2];
             left = cnts[r2][c1-1];
             up = cnts[r1-1][c2];
             prev = cnts[r1-1][c1-1];
 
             ans = 0;
             for (int num = 1; num <= 10; num++) {
-                cur[num] -= left[num];
-                cur[num] -= up[num];
-                cur[num] += prev[num];
+                cnt = cur[num];
+                cnt -= left[num];
+                cnt -= up[num];
+                cnt += prev[num];
 
-                if (cur[num] > 0) ans++;
+                if (cnt > 0) ans++;
             }
 
             bw.write(ans+"\n");
