@@ -34,14 +34,13 @@ public class Main {
         while (true) {
             l = readInt();
             u = readInt();
-            
+
             if (l == -1 && u == -1) break;
-            
+
             cnt1 = (u >= 0 ? acc1[u] : 0) - (l >= 1 ? acc1[l-1] : 0);
             cnt2 = (u >= 0 ? acc2[u] : 0) - (l >= 1 ? acc2[l-1] : 0);
 
-            bw.write(l + " " + u + " " + cnt1 + " " + cnt2);
-            bw.write("\n");
+            bw.write(l + " " + u + " " + cnt1 + " " + cnt2 + "\n");
         }
 
         bw.flush();
@@ -63,5 +62,5 @@ public class Main {
         }
 
         return negative ? -r : r;
-    }    
+    }
 } 
