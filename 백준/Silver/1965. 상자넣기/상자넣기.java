@@ -18,22 +18,34 @@ public class Main {
 
         list = new ArrayList<>();
 
+
+
         bw.write(lis()+"");
         bw.flush();
     }
 
     private static long lis() {
         list.clear();
-        
+
         for (int box : boxes) {
-            int pos = Collections.binarySearch(list, box);
-            
+            int pos = lowerbound(0, list.size(), box);
+
             if (pos < 0) pos = -(pos+1);
             if (pos >= list.size()) list.add(box);
             else list.set(pos, box);
         }
-        
+
         return list.size();
+    }
+
+    private static int lowerbound(int l, int r, int key) {
+        while (l < r) {
+            int mid = (l+r)/2;
+            if (list.get(mid) < key) l = mid+1;
+            else r = mid;
+        }
+        
+        return l;
     }
 
     public static int readInt() throws IOException {
