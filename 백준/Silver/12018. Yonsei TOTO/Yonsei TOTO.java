@@ -2,56 +2,60 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    private static BufferedWriter bw;
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken()); // 과목 수
-        int m = Integer.parseInt(st.nextToken()); // 사용 가능한 마일리지
+    private static PriorityQueue<Integer> pq, temp;
+    private static int n, m, req, limit, ans, cost;
 
-        PriorityQueue<Integer> minMileageQueue = new PriorityQueue<>(); // 최소 마일리지를 저장하는 우선순위 큐
+    public static void main(String... args) throws IOException {
+        bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        pq = new PriorityQueue<>();
+        temp = new PriorityQueue<>(Comparator.reverseOrder());
+
+        n = readInt();
+        m = readInt();
 
         for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            int req = Integer.parseInt(st.nextToken()); // 신청자 수
-            int limit = Integer.parseInt(st.nextToken()); // 수강 가능 인원
+            req = readInt();
+            limit = readInt();
 
-            st = new StringTokenizer(br.readLine());
-            List<Integer> mileages = new ArrayList<>();
+            temp.clear();
 
-            for (int j = 0; j < req; j++) {
-                mileages.add(Integer.parseInt(st.nextToken())); // 신청자의 마일리지
-            }
-
-            // 마일리지를 내림차순으로 정렬
-            Collections.sort(mileages, Collections.reverseOrder());
+            for (int j = 0; j < req; j++) temp.offer(readInt());
 
             if (req < limit) {
-                // 신청자 수가 수강 가능 인원보다 적으면 1만 넣어도 수강 가능
-                minMileageQueue.offer(1);
+                pq.offer(1);
             } else {
-                // 신청자 수가 수강 가능 인원보다 많으면 필요한 최소 마일리지를 계산
-                minMileageQueue.offer(mileages.get(limit - 1));
+                for (int j = 0; j < limit-1; j++) temp.poll();
+
+                pq.offer(temp.poll());
             }
         }
 
-        int ans = 0;
+        ans = 0;
 
-        // 최소 마일리지부터 처리
-        while (!minMileageQueue.isEmpty() && m > 0) {
-            int minMileage = minMileageQueue.poll();
-            if (m >= minMileage) {
-                m -= minMileage;
-                ans++;
-            } else {
-                break;
-            }
+        while (!pq.isEmpty()) {
+            cost = pq.poll();
+            if (cost > m) break;
+            m -= cost;
+            ans++;
         }
 
-        bw.write(ans + "\n");
+        bw.write(ans+"");
         bw.flush();
-        br.close();
-        bw.close();
+    }
+
+    public static int readInt() throws IOException {
+        int r = 0, c = System.in.read();
+
+        while (c <= ' ') c = System.in.read();
+        while (c >= '0' && c <= '9') {
+            r *= 10;
+            r += c - '0';
+            c = System.in.read();
+        }
+
+        return r;
     }
 }
