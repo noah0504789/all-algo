@@ -4,14 +4,16 @@ import java.util.*;
 public class Main {
     private static BufferedWriter bw;
 
-    private static PriorityQueue<Integer> pq, temp;
+    private static PriorityQueue<Integer> pq;
+    private static Integer[] temp;
     private static int n, m, req, limit, ans, cost;
 
     public static void main(String... args) throws IOException {
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         pq = new PriorityQueue<>();
-        temp = new PriorityQueue<>(Comparator.reverseOrder());
+//        temp = new PriorityQueue<>(Comparator.reverseOrder());
+        temp = new Integer[101];
 
         n = readInt();
         m = readInt();
@@ -20,16 +22,16 @@ public class Main {
             req = readInt();
             limit = readInt();
 
-            temp.clear();
+            Arrays.fill(temp, 0);
 
-            for (int j = 0; j < req; j++) temp.offer(readInt());
+            for (int j = 0; j < req; j++) temp[j] = readInt();
 
             if (req < limit) {
                 pq.offer(1);
             } else {
-                for (int j = 0; j < limit-1; j++) temp.poll();
+                Arrays.sort(temp, (a, b) -> b - a);
 
-                pq.offer(temp.poll());
+                pq.offer(temp[limit-1]);
             }
         }
 
