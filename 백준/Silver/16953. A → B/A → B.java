@@ -19,7 +19,7 @@ public class Main {
                 cnt++;
             } else if (b % 2 != 0) {
                 break;
-            } else {
+            } else if (b % 2 == 0) {
                 b /= 2;
                 cnt++;
             }
