@@ -34,8 +34,8 @@ public class Main {
                 src = st.nextToken();
                 dest = st.nextToken();
 
-                if (!map.containsKey(src)) map.put(src, serialNum++);
-                if (!map.containsKey(dest)) map.put(dest, serialNum++);
+                map.putIfAbsent(src, serialNum++);
+                map.putIfAbsent(dest, serialNum++);
 
                 bw.write(disjointSet.union(map.get(src), map.get(dest))+"\n");
             }
@@ -45,12 +45,12 @@ public class Main {
     }
 
     private static class DisjointSet {
-        int[] root, rank, size;
+        int[] root, rank, cnts;
 
         public DisjointSet(int size) {
             this.root = new int[size+1];
             this.rank = new int[size+1];
-            this.size = new int[size+1];
+            this.cnts = new int[size+1];
 
             makeSet();
         }
@@ -59,7 +59,7 @@ public class Main {
             for (int i = 0; i < root.length; i++) {
                 root[i] = i;
                 rank[i] = 1;
-                size[i] = 1;
+                cnts[i] = 1;
             }
         }
 
@@ -71,19 +71,18 @@ public class Main {
 
         public int union(int x, int y) {
             int rootX = find(x), rootY = find(y);
-            if (rootX == rootY) return size[rootX];
+            if (rootX == rootY) return cnts[rootX];
 
             if (rank[rootX] > rank[rootY]) {
                 root[rootY] = root[rootX];
-                size[rootX] += size[rootY];
-                return size[rootX];
+            
+                return cnts[rootX] += cnts[rootY];
             }
 
             root[rootX] = root[rootY];
             if (rank[rootX] == rank[rootY]) rank[rootY]++;
 
-            size[rootY] += size[rootX];
-            return size[rootY];
+            return cnts[rootY] += cnts[rootX];
         }
     }
 }
