@@ -4,12 +4,9 @@ import java.util.*;
 public class Main {
     private static BufferedWriter bw;
 
-    private static Queue<int[]> queue;
-    private static final int[][] UP_DIRS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-    private static final int[][] DOWN_DIRS = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-    private static int[][] board;
-    private static int[] cur;
-    private static int n, m, t, up, down, ans, r, c, amt, cnt, share, nr, nc, d;
+    private static final int[][] DIRS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    private static int[][] board, temp;
+    private static int n, m, t, up, down, ans, amt, cnt, share, nr, nc;
 
     public static void main(String... args) throws IOException {
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -20,8 +17,6 @@ public class Main {
 
         up = down = -1;
 
-        queue = new ArrayDeque<>();
-
         board = new int[n][m];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
@@ -30,60 +25,56 @@ public class Main {
                 if (board[i][j] == -1) {
                     if (up == -1) up = i;
                     else down = i;
-                } else if (board[i][j] > 0){
-                    queue.offer(new int[]{i, j, board[i][j]});
                 }
             }
         }
 
         while (t-- > 0) {
-            // 확산
-            while (!queue.isEmpty()) {
-                cur = queue.poll();
+            spread();
 
-                r = cur[0];
-                c = cur[1];
-                amt = cur[2];
-                share  = amt / 5;
+            cleanUp();
+            cleanDown();
+        }
+
+        ans = 0;
+        for (int i = 0; i < n; i++) ans += Arrays.stream(board[i]).sum();
+
+        ans -= (board[up][0] + board[down][0]);
+
+        bw.write(ans+"");
+        bw.flush();
+    }
+
+    private static void spread() {
+        temp = new int[n][m];
+        
+        temp[up][0] = temp[down][0] = -1;
+
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if (board[r][c] <= 0) continue;
+
+                amt = board[r][c];
+                share = amt / 5;
                 cnt = 0;
 
-                for (int[] dir : UP_DIRS) {
+                for (int[] dir : DIRS) {
                     nr = r + dir[0];
                     nc = c + dir[1];
 
                     if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
                     if (board[nr][nc] == -1) continue;
 
-                    board[nr][nc] += share;
+                    temp[nr][nc] += share;
                     cnt++;
                 }
 
-                board[r][c] -= (share * cnt);
-            }
-
-            // 청소
-            cleanUp();
-            cleanDown();
-
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (board[i][j] > 0) queue.offer(new int[]{i, j, board[i][j]});
-                }
+                temp[r][c] += amt;
+                temp[r][c] -= (share * cnt);
             }
         }
 
-        ans = 0;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (board[i][j] == -1) continue;
-
-                ans += board[i][j];
-            }
-        }
-
-        bw.write(ans+"");
-        bw.flush();
+        board = temp;
     }
 
     private static void cleanUp() {
@@ -111,7 +102,7 @@ public class Main {
         board[down][1] = 0;
         board[down][0] = -1;
     }
-    
+
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
 
