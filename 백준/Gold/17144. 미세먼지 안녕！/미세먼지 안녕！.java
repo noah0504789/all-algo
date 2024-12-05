@@ -29,6 +29,8 @@ public class Main {
             }
         }
 
+        temp = new int[n][m];
+
         while (t-- > 0) {
             spread();
 
@@ -36,27 +38,25 @@ public class Main {
             cleanDown();
         }
 
-        ans = 0;
+        ans = 2;
         for (int i = 0; i < n; i++) ans += Arrays.stream(board[i]).sum();
-
-        ans += 2;
 
         bw.write(ans+"");
         bw.flush();
     }
 
     private static void spread() {
-        temp = new int[n][m];
-        
-        temp[up][0] = temp[down][0] = -1;
+//        temp = new int[n][m];
+//        temp[up][0] = temp[down][0] = -1;
+
+        for (int i = 0; i < n; i++) System.arraycopy(board[i], 0, temp[i], 0, m);
 
         for (int r = 0; r < n; r++) {
             for (int c = 0; c < m; c++) {
-                if (board[r][c] <= 0) continue;
+                if (temp[r][c] <= 0) continue;
 
-                amt = board[r][c];
+                amt = temp[r][c];
                 share = amt / 5;
-                cnt = 0;
 
                 for (int[] dir : DIRS) {
                     nr = r + dir[0];
@@ -65,16 +65,11 @@ public class Main {
                     if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
                     if (board[nr][nc] == -1) continue;
 
-                    temp[nr][nc] += share;
-                    cnt++;
+                    board[r][c] -= share;
+                    board[nr][nc] += share;
                 }
-
-                temp[r][c] += amt;
-                temp[r][c] -= (share * cnt);
             }
         }
-
-        board = temp;
     }
 
     private static void cleanUp() {
