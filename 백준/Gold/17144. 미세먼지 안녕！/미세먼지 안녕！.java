@@ -39,7 +39,7 @@ public class Main {
         ans = 0;
         for (int i = 0; i < n; i++) ans += Arrays.stream(board[i]).sum();
 
-        ans -= (board[up][0] + board[down][0]);
+        ans += 2;
 
         bw.write(ans+"");
         bw.flush();
