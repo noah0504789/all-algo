@@ -36,8 +36,8 @@ public class Main {
 
         groupA = new HashSet<>();
         groupB = new HashSet<>();
-
-        for (int i = 1; i < (1<<n); i++) check(i);
+        
+        for (int i = 1; i < (1<<(n-1)); i++) check(i);
 
         bw.write(ans != INF ? ans+"" : "-1");
         bw.flush();
@@ -46,47 +46,48 @@ public class Main {
     private static void check(int bitmask) {
         groupA.clear();
         groupB.clear();
-
+        
         for (int i = 0; i < n; i++) {
-            if ((bitmask & (1 << i)) != 0) {
+            if ((bitmask & (1<<i)) != 0) {
+                groupA.add(i+1);
                 aStart = i+1;
-                groupA.add(i + 1);
             } else {
+                groupB.add(i+1);
                 bStart = i+1;
-                groupB.add(i + 1);
             }
         }
-
+        
         if (groupA.isEmpty() || groupB.isEmpty()) return;
         if (!isConnected(groupA, aStart)) return;
         if (!isConnected(groupB, bStart)) return;
-
+        
         int sumA = groupA.stream().mapToInt(i -> people[i]).sum();
         int sumB = total - sumA;
-
+        
         ans = Math.min(ans, Math.abs(sumA - sumB));
     }
-
+    
     private static boolean isConnected(Set<Integer> group, int start) {
         queue.clear();
         visited.clear();
-
+        
         queue.offer(start);
         visited.set(start);
-
+        
         while (!queue.isEmpty()) {
             int cur = queue.poll();
-
+            
             for (Node neigh = connected[cur]; neigh != null; neigh = neigh.next) {
                 int neighNum = neigh.num;
+                
                 if (!group.contains(neighNum)) continue;
                 if (visited.get(neighNum)) continue;
-
+                
                 visited.set(neighNum);
-                queue.offer(neighNum);
+                queue.offer(neighNum);                
             }
         }
-
+        
         return visited.cardinality() == group.size();
     }
 
