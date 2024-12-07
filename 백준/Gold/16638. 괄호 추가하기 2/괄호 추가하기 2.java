@@ -22,7 +22,7 @@ public class Main {
 
         ans = Integer.MIN_VALUE;
 
-        if (n == 1) ans = Character.getNumericValue(input.charAt(0));
+        if (n == 1) ans = input.charAt(0) - '0';
         else dfs(0);
 
         bw.write(ans+"");
@@ -52,10 +52,9 @@ public class Main {
         while (idx < n) {
             char val = input.charAt(idx);
 
-            if (val == '+' || val == '-') {
-                list.add(val+"");
-            } else if (val == '*') {
-                int cur = Integer.parseInt(list.get(list.size()-1)), next;
+            if (val == '*') {
+                int cur = Integer.parseInt(list.get(list.size()-1)); 
+                int next;
 
                 if (bracket[idx+1]) {
                     next = cal1(input.charAt(idx+1) - '0', input.charAt(idx+3) - '0', input.charAt(idx+2));
