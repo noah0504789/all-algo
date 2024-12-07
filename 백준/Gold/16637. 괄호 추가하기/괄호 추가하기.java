@@ -3,56 +3,44 @@ import java.util.*;
 
 public class Main {        
     private static BufferedReader br;
+    private static BufferedWriter bw;
 
-    private static char[] operators, chArr;
-    private static int[] operands;
-    private static int n, size, max;
+    private static String input;
+    private static int n, ans;
 
     public static void main(String... args) throws IOException {
         br = new BufferedReader(new InputStreamReader(System.in));
+        bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         n = Integer.parseInt(br.readLine());
-        size = n/2;
-       
-        operands = new int[size + 1];
-        operators = new char[size];
-        
-        max = Integer.MIN_VALUE;
+        input = br.readLine();
 
-        chArr = br.readLine().toCharArray();
-        for (int i = 0, j = 0, k = 0; i< chArr.length; i++) {
-            char ch = chArr[i];
+        ans = Integer.MIN_VALUE;
 
-            if (Character.isDigit(ch)) operands[j++] = ch - '0';
-            else operators[k++] = ch;
-        }
+        dfs(0, input.charAt(0)-'0');
 
-        dfs(0, operands[0]);
-        
-        System.out.print(max);
+        bw.write(ans+"");
+        bw.flush();
     }
-    
-    private static void dfs(int idx, int result) {
-        if (idx >= size) {
-            max = Math.max(max, result);
+
+    private static void dfs(int idx, int rst) {
+        if (idx+2 >= n) {
+            ans = Math.max(ans, rst);
             return;
         }
-        
-        dfs(idx+1, calc(result, operands[idx+1], operators[idx]));
-        
-        if (idx + 1 < size) {
-            int next = calc(operands[idx+1], operands[idx+2], operators[idx+1]);
-            dfs(idx+2, calc(result, next, operators[idx]));
+
+        dfs(idx+2, cal(rst, input.charAt(idx+2)-'0', input.charAt(idx+1)));
+
+        if (idx+4 < n) {
+            int next = cal(input.charAt(idx+2)-'0', input.charAt(idx+4)-'0', input.charAt(idx+3));
+            dfs(idx + 4, cal(rst, next, input.charAt(idx + 1)));
         }
     }
 
-    private static int calc(int left, int right, char op) {
-        int result = left;
+    private static int cal(int op1, int op2, char op) {
+        if (op == '+') return op1+op2;
+        if (op == '-') return op1-op2;
 
-        if (op == '+') result += right;
-        else if (op == '-') result -= right;
-        else if (op == '*') result *= right;
-
-        return result;
-    }
+        return op1*op2;
+    }    
 }
