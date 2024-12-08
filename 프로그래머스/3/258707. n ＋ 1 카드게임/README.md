@@ -1,6 +1,6 @@
 # [level 3] n + 1 카드게임 - 258707 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258707) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258707?language=java) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 12월 08일 20:18:29
+2024년 12월 08일 20:19:03
 
 ### 문제 설명
 
