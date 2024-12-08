@@ -1,6 +1,6 @@
 # [level 3] 주사위 고르기 - 258709 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258709#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258709) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 12월 09일 04:07:55
+2024년 12월 09일 04:08:53
 
 ### 문제 설명
 
