@@ -104,7 +104,7 @@ public class Main {
             sum += curE.dist;
 
             if (disjointSet.isConnected()) break;
-//            if (++eCnt == borderList.size()-1) break;
+            if (++eCnt == borderList.size()-1) break;
         }
 
         bw.write(disjointSet.isConnected() ? sum+"" : "-1");
@@ -139,18 +139,16 @@ public class Main {
 
     static class DisjointSet {
         int[] rank, root;
-        int connectedCnt;
 
         public DisjointSet(int size) {
             this.rank = new int[size+1];
             this.root = new int[size+1];
-            this.connectedCnt = size;
-            
+
             makeSet();
         }
 
         private void makeSet() {
-            for (int i = 1; i <= rank.length-1; i++) {
+            for (int i = 1; i < rank.length; i++) {
                 rank[i] = 1;
                 root[i] = i;
             }
@@ -172,20 +170,17 @@ public class Main {
 
             if (rank[rootX] == rank[rootY]) rank[rootX]++;
 
-            connectedCnt--;
             return true;
         }
 
         public boolean isConnected() {
-//            int root = find(1);
-//
-//            for (int i = 2; i < rank.length-1; i++) {
-//                if (root != find(i)) return false;
-//            }
-//
-//            return true;
-            
-            return connectedCnt == 1;
+            int root = find(1);
+
+            for (int i = 2; i < rank.length; i++) {
+                if (root != find(i)) return false;
+            }
+
+            return true;
         }
     }
 
