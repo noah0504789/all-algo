@@ -5,17 +5,17 @@ public class Main {
     private static BufferedWriter bw;
 
     private static final int INF = Integer.MAX_VALUE;
+    private static final int start = 1;
+    
     private static PriorityQueue<Edge> pq;
     private static List<List<Edge>> edges;
     private static BitSet visited;
     private static int[] minDists;
-    private static long a, b, c;
-    private static int start, end, v, e, p;
+    private static int v, e, p, end;
 
     public static void main(String... args) throws IOException {
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        start = 1;
         v = end = readInt();
         e = readInt();
         p = readInt();
@@ -34,16 +34,10 @@ public class Main {
         visited = new BitSet();
         minDists = new int[v+1];
 
-        if (p == 1) {
+        if (dijkstra(start, end) == dijkstra(start, p) + dijkstra(p, end)) {
             bw.write("SAVE HIM");
         } else {
-            a = dijkstra(start, p);
-            b = dijkstra(p, end);
-            c = dijkstra(start, end);
-
-            if (a == INF || b == INF) bw.write("GOOD BYE");
-            else if (a+b == c) bw.write("SAVE HIM");
-            else bw.write("GOOD BYE");
+            bw.write("GOOD BYE");
         }
 
         bw.flush();
@@ -51,8 +45,8 @@ public class Main {
 
     private static long dijkstra(int start, int end) {
         pq.clear();
-        visited.clear();
         Arrays.fill(minDists, INF);
+        visited.clear();
 
         pq.offer(new Edge(start, 0));
         minDists[start] = 0;
