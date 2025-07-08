@@ -5,8 +5,7 @@ public class Main {
     
     private static StringBuilder sb;
     private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    private static Set<String> set = new HashSet();
-    private static PriorityQueue<String> pq = new PriorityQueue();
+    private static String[] arr1, arr2;
     private static int n, m;
     
     public static void main(String... args) throws IOException {
@@ -15,16 +14,36 @@ public class Main {
         n = readInt();
         m = readInt();
                 
-        for (int i = 0; i < n; i++) set.add(br.readLine());
+        arr1 = new String[n];
+        for (int i = 0; i < n; i++) arr1[i] = br.readLine();
         
-        for (int i = 0; i < m; i++) {
-            String name = br.readLine();
-            if (set.contains(name)) pq.offer(name);
-        }
+        arr2 = new String[m];
+        for (int i = 0; i < m; i++) arr2[i] = br.readLine();
         
-        sb.append(pq.size()).append("\n");              
+        Arrays.sort(arr1);
+        Arrays.sort(arr2);      
+
+        List<String> ans = new ArrayList<>();
         
-        while (!pq.isEmpty()) sb.append(pq.poll()).append("\n");              
+        int i = 0, j = 0;
+        
+        while (i < n && j < m) {
+            int cmp = arr1[i].compareTo(arr2[j]);
+            
+            if (cmp == 0) {
+                ans.add(arr1[i]);
+                i++;
+                j++;
+            } else if (cmp < 0) {
+                i++;
+            } else {
+                j++;
+            }
+        }        
+        
+        sb.append(ans.size()).append("\n");              
+        
+        for (String s : ans) sb.append(s).append("\n");
 
         System.out.print(sb);
     }
