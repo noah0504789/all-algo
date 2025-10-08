@@ -25,7 +25,7 @@ public class Main {
             move[i+1] += dist;
             move[v] += dist;
             
-            arr[i] = i+1; pos[i+1] = i;
+//            arr[i] = i+1; pos[i+1] = i;
             arr[j] = v; pos[v] = j;
         }
         
