@@ -4,46 +4,24 @@ import java.util.*;
 public class Main {
     
     private static StringBuilder sb;
-    private static int n;
-    private static int[] arr;
+    private static int n, SIZE = 1_000_000, MAX = SIZE * 2;
+    private static boolean[] arr;
     
     public static void main(String... args) throws IOException {
         sb = new StringBuilder();
         
         n = readInt();
-        arr = new int[n];
+        arr = new boolean[MAX+1];
         
-        for (int i = 0; i < n; i++) arr[i] = readInt();
+        for (int i = 0; i < n; i++) arr[readInt()+SIZE] = true;        
         
-        mergeSort(0, n-1);
-        
-        for (int val : arr) sb.append(val+"\n");
+        for (int i = 0; i <= MAX; i++) {
+            if (arr[i]) sb.append(i-SIZE).append("\n");
+        }
 
         System.out.print(sb);
     }
     
-    public static void mergeSort(int l, int r) {
-        if (l >= r) return;
-        
-        int m = (l+r)/2;
-        
-        mergeSort(l, m);
-        mergeSort(m+1, r);
-        
-        merge(l, m, r);
-    }
-    
-    public static void merge(int l, int m, int r) {
-        int[] merged = new int[r-l+1];
-        int i = l, j = m+1, k = 0;
-        
-        while (i <= m && j <= r) merged[k++] = arr[i] <= arr[j] ? arr[i++] : arr[j++];
-        while (i <= m) merged[k++] = arr[i++];
-        while (j <= r) merged[k++] = arr[j++];
-        
-        System.arraycopy(merged, 0, arr, l, merged.length);
-    }
-
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
         boolean negative = false;       
