@@ -24,20 +24,21 @@ public class Main {
     
     private static int solution(String s) {
         int l = 0, r = s.length()-1;
-        while (l <= r) {
+        while (l < r) {
             if (s.charAt(l) == s.charAt(r)) {
                 l++;
                 r--;
-            } 
-            else if (isPal(s, l+1, r) || isPal(s, l, r-1)) return S; 
-            else return N;                
+            } else {
+                if (isPal(s, l+1, r) || isPal(s, l, r-1)) return S; 
+                return N;
+            }
         }
         
         return P;
     }
     
     private static boolean isPal(String s, int l, int r) {
-        while (l <= r) {
+        while (l < r) {
             if (s.charAt(l) != s.charAt(r)) return false;
             l++;
             r--;
