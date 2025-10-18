@@ -6,21 +6,16 @@ public class Main {
     private static StringBuilder sb;
     private static int n;
     private static int[] arr, arr2;
-    private static Set<Integer> set;
     
     public static void main(String... args) throws IOException {
         sb = new StringBuilder();
         n = readInt();
         arr = new int[n];
         
-        set = new HashSet<>();
+        TreeSet<Integer> set = new TreeSet<>();
         for (int i = 0; i < n; i++) set.add(arr[i] = readInt());
         
-        arr2 = new int[set.size()];
-        int i = 0;
-        for (int num : set) arr2[i++] = num;
-                
-        Arrays.sort(arr2);
+        arr2 = set.stream().mapToInt(Integer::intValue).toArray();
         
         for (int target : arr) sb.append(lowerBound(target)).append(" ");
         
