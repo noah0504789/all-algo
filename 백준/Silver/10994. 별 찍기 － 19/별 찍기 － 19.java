@@ -14,17 +14,12 @@ public class Main {
         r = c = (n-1)*2;
         width = 2*r+1;
         arr = new char[width][width];        
-        arr[r][c] = '*';
+        
+        for (int i = 0; i < width; i++) Arrays.fill(arr[i], ' ');        
         
         draw(0, width-1);
         
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < width; j++) {
-                char val = arr[i][j] == '\u0000' ? ' ' : arr[i][j];
-                sb.append(val);
-            }
-            sb.append("\n");
-        }
+        for (int i = 0; i < width; i++) sb.append(arr[i]).append("\n");
 
         System.out.print(sb);
     }
