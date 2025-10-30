@@ -26,19 +26,19 @@ public class Main {
         
         tot = new long[4][21][4];
         for (int s = 1; s <= 3; s++) {
-            for (int k = 1; k <= 3; k++) tot[s][0][k] = (s==k) ? 1 : 0;
+            for (int k = 1; k <= 3; k++) tot[s][0][k] = s == k ? 1 : 0;
         }
         
         for (int d = 1; d <= n; d++) {
-            for (int s = 1; s <= 3; s++) {            
+            for (int s = 1; s <= 3; s++) {
                 for (int c : rule[s]) {
                     tot[s][d][1] += tot[c][d-1][1];
                     tot[s][d][2] += tot[c][d-1][2];
                     tot[s][d][3] += tot[c][d-1][3];
                 }
-            }
+            }            
         }
-        
+                
         ans = solve(init, n, l, r);
         
         System.out.println(ans[1] + " " + ans[2] + " " + ans[3]);
@@ -46,35 +46,27 @@ public class Main {
     
     private static long[] solve(int s, int d, long ql, long qr) {
         long[] res = new long[4];
-        if (ql > qr || d < 0) return res;
-        
-        long blockLen = len[d];
-        if (ql == 0 && qr == blockLen-1) {
-            res[1] = tot[s][d][1];
-            res[2] = tot[s][d][2];
-            res[3] = tot[s][d][3];
-            return res;
-        }
-        
+        if (ql > qr || d < 0) return res;                
         if (d == 0) {
             res[s] = 1;
             return res;
         }
         
-        long childLen = len[d-1];
+        long w = len[d];
+        if (ql == 0 && qr == w-1) return tot[s][d];
+        
+        long ww = len[d-1];
         for (int i = 0; i < 3; i++) {
             int child = rule[s][i];
-            long start = childLen * i, end = start + childLen - 1;
+            long start = ww * i, end = start + ww - 1;
             long nl = Math.max(ql, start), nr = Math.min(qr, end);
-            
             if (nl <= nr) {
                 long[] got = solve(child, d-1, nl-start, nr-start);
                 res[1] += got[1];
                 res[2] += got[2];
-                res[3] += got[3];
+                res[3] += got[3];                
             }
         }
-        
         return res;
     }
     
