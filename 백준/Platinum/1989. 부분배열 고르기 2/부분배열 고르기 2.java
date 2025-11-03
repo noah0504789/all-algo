@@ -38,7 +38,7 @@ public class Main {
         }
         
         ans = 0;
-        a= 1; 
+        a = 1; 
         b = n;
         for (int i = 0; i < n; i++) {
             int left = l[i]+1, right = r[i]-1;
