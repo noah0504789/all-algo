@@ -2,66 +2,71 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static int[][] board;
-    private static int n, val, oneCnt, zeroCnt;
-
+    
+    private static StringBuilder sb;
+    private static int n, a, b;
+    private static int[][] arr;
+    
     public static void main(String... args) throws IOException {
-        n = readInt();  
+        sb = new StringBuilder();
         
-        board = new int[n][n];
-        
-        for (int r = 0; r < n; r++) {
-            for (int c = 0; c < n; c++) board[r][c] = readInt();
+        n = readInt();
+        arr = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j< n; j++) arr[i][j] = readInt();
         }
         
-        countPaper(0, 0, n);
+        solve(n, 0, 0);
 
-        System.out.println(zeroCnt);
-        System.out.print(oneCnt);
+        sb.append(a+"\n").append(b+"\n");
+        
+        System.out.print(sb);
     }
     
-    public static void countPaper(int r, int c, int size) {
-        if (isSame(r, c, size)) {
-            val = board[r][c];
-            if (val == 0) zeroCnt++;
-            else if (val == 1) oneCnt++;
-            
+    private static void solve(int w, int r, int c) {
+        if (w == 1 || isUniformed(w, r, c)) {
+            count(r, c);
             return;
         }
         
-        size /= 2;
+        w >>= 1;
         
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 2; j++) {
-                int nr = r + i * size, nc = c + j * size;
-                
-                countPaper(nr, nc, size);
-            }    
-        }
+        solve(w, r, c);
+        solve(w, r, c+w);
+        solve(w, r+w, c);
+        solve(w, r+w, c+w);
     }
     
-    public static boolean isSame(int r, int c, int size) {
-        val = board[r][c];
-        
-        for (int nr = r; nr < r + size; nr++) {
-            for (int nc = c; nc < c + size; nc++) {
-                if (board[nr][nc] != val) return false;
+    private static boolean isUniformed(int w, int r, int c) {
+        for (int i = r; i < r+w; i++) {
+            for (int j = c; j< c+w; j++) {
+                if (arr[i][j] != arr[r][c]) return false;
             }
         }
-        
         return true;
+    }
+    
+    private static void count(int r, int c) {
+        int val = arr[r][c];
+        if (val == 0) a++;
+        else b++;
     }
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
+        boolean negative = false;       
 
         while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
         while (c >= '0' && c <= '9') {
             r *= 10;
             r += c - '0';
             c = System.in.read();
         }
 
-        return r;
+        return negative ? -r : r;
     }
 }
