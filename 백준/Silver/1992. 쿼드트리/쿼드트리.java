@@ -1,58 +1,53 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {        
-    private static BufferedReader br;
+public class Main {
+    
     private static StringBuilder sb;
-
-    private static char val;
-    private static char[][] board;
+    private static BufferedReader br;
     private static int n;
-
+    private static char[][] arr;
+    
     public static void main(String... args) throws IOException {
-        br = new BufferedReader(new InputStreamReader(System.in));
         sb = new StringBuilder();
-
+        br = new BufferedReader(new InputStreamReader(System.in));
+        
         n = Integer.parseInt(br.readLine());
-
-        board = new char[n][n];
-
-        for (int i = 0; i < n; i++) board[i] = br.readLine().toCharArray();
-
-        quadtree(0, 0, n);
-
+        arr = new char[n][n];
+        for (int i = 0; i < n; i++) arr[i] = br.readLine().toCharArray();
+                
+        solve(n, 0, 0);
+        
         System.out.print(sb);
     }
-
-    private static void quadtree(int r, int c, int size) {
-        if (isSame(r, c, size)) {
-            sb.append(board[r][c]);
+    
+    private static void solve(int w, int r, int c) {
+        if (isUniformed(w, r, c)) {
+            sb.append(arr[r][c]);
             return;
         }
-
-        size /= 2;
-
-        sb.append('(');
-
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 2; j++) {
-                int nr = r + i * size, nc = c + j * size;
-                quadtree(nr, nc, size);
-            }
-        }
-
-        sb.append(')');
+                
+        sb.append("(");
+        
+        w >>= 1;
+        
+        solve(w, r, c);
+        solve(w, r, c+w);
+        solve(w, r+w, c);
+        solve(w, r+w, c+w);
+        
+        sb.append(")");        
     }
-
-    private static boolean isSame(int r, int c, int size) {
-        val = board[r][c];
-
-        for (int nr = r; nr < r + size; nr++) {
-            for (int nc = c; nc < c + size; nc++) {
-                if (board[nr][nc] != val) return false;
-            }
+    
+    private static boolean isUniformed(int w, int r, int c) {
+        char first = arr[r][c];
+        
+        for (int i = r; i < r+w; i++) {
+            for (int j = c; j < c+w; j++) {
+                if (first != arr[i][j]) return false;
+            }    
         }
-
+        
         return true;
     }
 }
