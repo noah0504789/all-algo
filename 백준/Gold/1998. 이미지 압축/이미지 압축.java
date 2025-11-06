@@ -1,147 +1,129 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {        
+public class Main {
+    
     private static BufferedReader br;
-    private static BufferedWriter bw;
-    private static StringTokenizer st;
-
+    private static int n, m, w, cnt, a, b;
+    private static String[] input;
+    private static int[][] arr;
     private static Map<String, Integer> map;
     private static Node root;
-    private static String input;
-    private static byte[][] board;
-    private static byte val;
-    private static int n, m, size, nonCompressedCnt, compressedCnt;
-
+    
     public static void main(String... args) throws IOException {
         br = new BufferedReader(new InputStreamReader(System.in));
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-        st = new StringTokenizer(br.readLine());
-
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
-
-        size = nextN(Math.max(n, m));
-
-        board = new byte[size][size];
-
-        for (int i = 0; i < n; i++) {
-            input = br.readLine();
-            for (int j = 0; j < m; j++) board[i][j] = (byte) (input.charAt(j) - '0');
+        
+        input = br.readLine().split(" ");
+        n = Integer.parseInt(input[0]);
+        m = Integer.parseInt(input[1]);
+        
+        w = Math.max(n,m);
+        if (!checkPow2(w)) w = Integer.highestOneBit(w)<<1;
+        
+        arr = new int[w][w];
+        for (int r = 0; r < n; r++) {
+            char[] cArr = br.readLine().toCharArray();
+            for (int c = 0; c < m; c++) arr[r][c] = cArr[c] - '0';        
         }
-
-        nonCompressedCnt = compressedCnt = 0;
+        
         map = new HashMap<>();
-
-        quadTree(root = new Node(0, 0, size), 0, 0, size);
-        compressedCnt = preOrderWithCache(root);
-
-        bw.write(nonCompressedCnt + " " + compressedCnt);
-
-        bw.flush();
+        
+        root = new Node(0, 0, w);
+        
+        System.out.print(compress(root, w, 0, 0) + " " + preOrderWithCache(root));
     }
-
-    private static int nextN(int n) {
-        int size = 1;
-
-        while (size < n) size *= 2;
-
-        return size;
+    
+    private static int preOrderWithCache(Node node) {
+        if (!node.hasChildren()) return 1;
+        String hash = node.hashStr();
+        map.put(hash, map.getOrDefault(hash, 0)+1);
+        if(map.get(hash)>1) return 0;
+        
+        int cnt = 1;
+        for (Node child : node.children) cnt += preOrderWithCache(child);
+        
+        return cnt;
     }
-
-    private static void quadTree(Node node, int r, int c, int size) {
-        nonCompressedCnt++;
-
-        if (isSame(r, c, size)) {
-            node.compress(board[r][c]);
-            return;
+    
+    private static int compress(Node node, int w, int r, int c) {
+        if (isUniformed(w, r, c)) {
+            node.compress(arr[r][c]);
+            return 1;
         }
-
-        size /= 2;
-
+        
+        w >>= 1;
+        
+        int cnt = 1;
+        
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
-                int nr = r + i * size, nc = c + j * size;
-
-                Node child = new Node(nr, nc, size);
-
-                quadTree(child, nr, nc, size);
-
+                int nr = r + i*w, nc = c + j*w;
+                Node child = new Node(nr, nc, w);
+                cnt += compress(child, w, nr, nc);
                 node.addChild(child);
             }
         }
-    }
-
-    private static int preOrderWithCache(Node node) {
-        if (!node.hasChildren()) return 1;
-
-        String hash = node.hashStr();
-        map.put(hash, map.getOrDefault(hash, 0) + 1);
-
-        if (map.get(hash) > 1) return 0;
-
-        int cnt = 1;
-
-        for (Node child : node.children) cnt += preOrderWithCache(child);
-
+        
         return cnt;
     }
-
-    private static boolean isSame(int r, int c, int size) {
-        val = board[r][c];
-
-        for (int nr = r; nr < r + size; nr++) {
-            for (int nc = c; nc < c + size; nc++) {
-                if (board[nr][nc] != val) return false;
+    
+    private static boolean isUniformed(int w, int r, int c) {
+        for (int i = r; i < r+w; i++) {
+            for (int j = c; j < c+w; j++) {
+                if (arr[r][c] != arr[i][j]) return false;
             }
         }
-
+        
         return true;
     }
-
+    
+    private static boolean checkPow2(int w) {
+        for (int i = 0; i <= 8; i++) {
+            if (w == 1<<i) return true;            
+        }
+        
+        return false;
+    }
+    
     static class Node {
-        final int r, c, size;
-        byte compressedCh;
+        int r, c, w;
+        int compressed;
+        String hashValue;
         List<Node> children;
-
-//        private Integer hashValue;
-        private String hashValue;
-
-        Node(int r, int c, int size) {
-            this.r = r;
-            this.c = c;
-            this.size = size;
-            this.compressedCh = -1;
+        
+        Node(int r, int c, int w) {
+            this.r=r;
+            this.c=c;
+            this.w=w;
+            this.compressed=-1;
         }
-
-        public void compress(byte ch) {
-            this.compressedCh = ch;
+        
+        public void compress(int compressed) {
+            this.compressed=compressed;
         }
-
+        
+        public boolean hasChildren() {
+            return children!=null;
+        }
+        
         public void addChild(Node child) {
             if (children == null) children = new ArrayList<>();
-
             children.add(child);
-        }
-
-        public boolean hasChildren() {
-            return children != null;
         }
         
         public String hashStr() {
             if (hashValue != null) return hashValue;
-
-            if (!this.hasChildren()) return String.valueOf(this.compressedCh);
-
+            
+            if (children == null) return this.compressed+"";
+            
             StringBuilder sb = new StringBuilder();
-
+            
             sb.append("(");
-
-            for (Node child : children) sb.append(child.hashStr());
-
+            
+            for (Node child: children) sb.append(child.hashStr());
+            
             sb.append(")");
-
+            
             return hashValue = sb.toString();
         }
     }
