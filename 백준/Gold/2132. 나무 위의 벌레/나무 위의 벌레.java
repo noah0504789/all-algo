@@ -2,81 +2,82 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static BufferedWriter bw;
-
-    private static List<Edge>[] tree;
-    private static int[] dists;
-    private static int n, src, dest, ans, ansNum, start;
-
+    
+    private static StringBuilder sb;
+    private static int n, s, e;
+    private static int[] fruit;
+    private static long[] dist;
+    private static List<Integer>[] adj;
+    
     public static void main(String... args) throws IOException {
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        sb = new StringBuilder();
 
         n = readInt();
-
-        dists = new int[n+1];
-        tree = new ArrayList[n+1];
-        for (int i = 1; i <= n; i++) {
-            dists[i] = readInt();
-            tree[i] = new ArrayList<>();
-        }
+        
+        fruit = new int[n];
+        adj = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            fruit[i] = readInt();
+            adj[i] = new ArrayList<>();
+        }        
         
         for (int i = 0; i < n-1; i++) {
-            src = readInt();
-            dest = readInt();
-
-            tree[src].add(new Edge(dest, dists[dest]));
-            tree[dest].add(new Edge(src, dists[src]));
-        }
-
-        ans = 0;        
-        ansNum = n+1;
-        start = 1;
-        dfs(start, -1, dists[start]);
-        
-        ans = 0;
-        start = ansNum;
-        //ansNum = n+1;
-        dfs(start, -1, dists[start]);
-
-        bw.write(ans + " " + Math.min(start, ansNum));
-
-        bw.flush();
-    }
-
-    public static void dfs(int cur, int prev, int sum) {
-        if (ans < sum) {
-            ans = sum;
-            ansNum = cur;
-        } else if (ans == sum) {
-            ansNum = Math.min(ansNum, cur);
+            s = readInt()-1;
+            e = readInt()-1;
+            
+            adj[s].add(e);
+            adj[e].add(s);
         }
         
-        for (Edge edge : tree[cur]) {
-            if (edge.dest == prev) continue;
-
-            dfs(edge.dest, cur, sum + edge.dist);
-        }
+        dist = new long[n];
+        
+        s = dfs(0);
+        e = dfs(s);
+        
+        System.out.print(dist[e] + " " + (Math.min(s, e)+1));
     }
-
-    static class Edge {
-        final int dest, dist;
-
-        public Edge(int dest, int dist) {
-            this.dest = dest;
-            this.dist = dist;
+    
+    private static int dfs(int idx) {
+        Arrays.fill(dist, 0);
+        dist[idx] = fruit[idx];
+        dfs(idx, -1);
+        
+        int res = 0;
+        long mx = dist[0];
+        
+        for (int i = 1; i < n; i++) {
+            if (dist[i] > mx || (dist[i] == mx && i < res)) {
+                mx = dist[i];
+                res = i;
+            }
+        }
+        
+        return res;
+    }
+    
+    private static void dfs(int cur, int prev) {        
+        for (int nxt : adj[cur]) {
+            if (nxt == prev) continue;
+            dist[nxt] = dist[cur] + fruit[nxt];
+            dfs(nxt, cur);
         }
     }
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
+        boolean negative = false;       
 
         while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
         while (c >= '0' && c <= '9') {
             r *= 10;
             r += c - '0';
             c = System.in.read();
         }
 
-        return r;
+        return negative ? -r : r;
     }
 }
