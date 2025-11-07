@@ -2,88 +2,128 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static BufferedWriter bw;
-    private static int ans;
-    private static byte[][] board;
-    private static byte n;
-
+    
+    private static int n, cnt;
+    private static int[][] arr;
+    private static Map<Long, Integer> memo;
+    private static final int NONE = -1, H = 0, V = 1;
+    
+    
     public static void main(String... args) throws IOException {
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-        n = readByte();
-
-        board = new byte[n][n];
-
-        for (byte r = 0; r < n; r++) {
-            for (byte c = 0; c < n; c++) board[r][c] = readByte();
+        n = readInt();
+                
+        arr = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) arr[i][j] = readInt();
         }
+        
+        memo = new HashMap<>();
+        
+        cnt = solve(0,0,n-1,n-1,NONE);
 
-        ans = divideAndConquer(0, n-1, 0, n-1, -1);
-
-        bw.write(String.valueOf(ans > 0 ? ans : -1));
-
-        bw.flush();
-    }
-
-    // dir: 가로 -> 0, 세로 -> 1
-    public static int divideAndConquer(int rl, int rh, int cl, int ch, int dir) {
-        BitSet jewelR = new BitSet(), jewelC = new BitSet();
-        BitSet impurityR = new BitSet(), impurityC = new BitSet();
-
-        int iCnt = 0, jCnt = 0;
-
-        for (byte r = (byte) rl; r <= rh; r++) {
-            for (byte c = (byte) cl; c <= ch; c++) {
-                if (board[r][c] == 1) {
-                    impurityR.set(r);
-                    impurityC.set(c);
-                    iCnt++;
-                } else if (board[r][c] == 2) {
-                    jewelR.set(r);
-                    jewelC.set(c);
-                    jCnt++;
+        System.out.print(cnt == 0 ? -1 : cnt);
+    }    
+    
+    private static int solve(int r1, int c1, int r2, int c2, int lastDir) {
+        int g = gems(r1, c1, r2, c2), p = imps(r1, c1, r2, c2);
+        
+        if (p == 0) return g==1 ? 1 : 0;
+        if (g == 0) return 0;
+        
+        long k = key(r1, c1, r2, c2, lastDir);
+        Integer m = memo.get(k);
+        if (m != null) return m;
+        
+        int ways = 0;        
+        for (int r = r1; r<= r2; r++) {
+            for (int c = c1; c<= c2; c++) {
+                if (arr[r][c] != 1) continue;
+                
+                if (lastDir != H && canCutRow(r, c1, c2, c)) {
+                    int gTop = gems(r1, c1, r-1, c2), gBot = gems(r+1, c1, r2, c2);
+                    if (gTop > 0 && gBot > 0) {
+                        int w1 = solve(r1, c1, r-1, c2, H);
+                        int w2 = solve(r+1, c1, r2, c2, H);
+                        ways += w1*w2;
+                    }
                 }
-            }
+                
+                if (lastDir != V && canCutCol(c, r1, r2, r)) {
+                    int gL = gems(r1, c1, r2, c-1), gR = gems(r1, c+1, r2, c2);
+                    if (gL > 0 && gR > 0) {
+                        int w1 = solve(r1, c1, r2, c-1, V);
+                        int w2 = solve(r1, c+1, r2, c2, V);
+                        ways += w1*w2;
+                    }
+                }
+            }    
         }
-
-        if (jCnt - iCnt != 1) return 0;
-        if (jCnt == 1 && iCnt == 0) return 1;
-
-        int res = 0;
-
-        int ni = 0;
-        if (dir != 0) {
-            // 세로
-            while ((ni = impurityR.nextSetBit(ni)) != -1) {
-                if (!jewelR.get(ni)) res += (divideAndConquer(rl, ni-1, cl, ch, 0) * divideAndConquer(ni+1, rh, cl, ch, 0));
-
-                ni++;
-            }
+        
+        memo.put(k, ways);
+        return ways;
+    }
+    
+    private static int gems(int r1, int c1, int r2, int c2) {
+        int k = 0;
+        for (int r = r1; r<= r2; r++) {
+            for (int c = c1; c<= c2; c++) {
+                if (arr[r][c] == 2) k++;
+            }    
         }
-
-        ni = 0;
-        if (dir != 1) {
-            // 가로
-            while ((ni = impurityC.nextSetBit(ni)) != -1) {
-                if (!jewelC.get(ni)) res += (divideAndConquer(rl, rh, cl, ni-1, 1) * divideAndConquer(rl, rh, ni+1, ch, 1));
-
-                ni++;
-            }
+        return k;
+    }
+    
+    private static int imps(int r1, int c1, int r2, int c2) {
+        int k = 0;
+        for (int r = r1; r<= r2; r++) {
+            for (int c = c1; c<= c2; c++) {
+                if (arr[r][c] == 1) k++;
+            }    
         }
-
-        return res;
+        return k;
+    }    
+    
+    private static long key(int r1, int c1, int r2, int c2, int last) {
+        long k = r1;
+        k = (k<<5)^c1;
+        k = (k<<5)^r2;
+        k = (k<<5)^c2;
+        k = (k<<2)^(last+1);
+        
+        return k;
+    }    
+    
+    private static boolean canCutRow(int r, int c1, int c2, int colImp) {
+        for (int c = c1; c<= c2; c++) {
+            if (c == colImp) continue;
+            if (arr[r][c] != 0) return false;
+        }  
+        return true;
+    }
+    
+    private static boolean canCutCol(int c, int r1, int r2, int rowImp) {
+        for (int r = r1; r<= r2; r++) {
+            if (r == rowImp) continue;
+            if (arr[r][c] != 0) return false;
+        }  
+        return true;
     }
 
-    public static byte readByte() throws IOException {
-        byte r = 0, c = (byte) System.in.read();
+    public static int readInt() throws IOException {
+        int r = 0, c = System.in.read();
+        boolean negative = false;       
 
-        while (c <= ' ') c = (byte) System.in.read();
+        while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
         while (c >= '0' && c <= '9') {
             r *= 10;
             r += c - '0';
-            c = (byte) (System.in.read());
+            c = System.in.read();
         }
 
-        return r;
+        return negative ? -r : r;
     }
 }
