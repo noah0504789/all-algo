@@ -4,49 +4,42 @@ import java.util.*;
 public class Main {
     
     private static StringBuilder sb;
-    private static int n, m, card, l, r;
+    private static int n, m;
     private static int[] arr;
     
     public static void main(String... args) throws IOException {
         sb = new StringBuilder();
-        
         n = readInt();
         arr = new int[n];
         for (int i = 0; i < n; i++) arr[i] = readInt();
-        
         Arrays.sort(arr);
         
         m = readInt();
         for (int i = 0; i < m; i++) {
-            card = readInt();
-            l = lowerBound(card);
-            r = upperBound(card);
-            
-            sb.append((r-l)).append(" ");
+            int target = readInt();
+            sb.append(upperBound(target) - lowerBound(target)).append(" ");
         }
 
         System.out.print(sb);
     }
     
-    private static int lowerBound(int card) {
-        int l = 0; r = n;
+    private static int upperBound(int target) {
+        int l = 0, r = n;
         while (l < r) {
-            int m = (l+r)/2;
-            if (arr[m] >= card) r = m;
-            else l = m+1;
+            int mid = (l+r)>>>1;
+            if (arr[mid] <= target) l = mid+1;
+            else r = mid;
         }
-        
         return l;
     }
     
-    private static int upperBound(int card) {
-        int l = 0; r = n;
+    private static int lowerBound(int target) {
+        int l = 0, r = n;
         while (l < r) {
-            int m = (l+r)/2;
-            if (arr[m] > card) r = m;
-            else l = m+1;
+            int mid = (l+r)>>>1;
+            if (arr[mid] < target) l = mid+1;
+            else r = mid;
         }
-        
         return l;
     }    
 
