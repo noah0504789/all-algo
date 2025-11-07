@@ -4,11 +4,13 @@ import java.util.*;
 public class Main {
     
     private static StringBuilder sb;
+    private static int n, m, target, l, r, mid;
+    private static boolean flag;
     private static int[] arr;
-    private static int n, m;
     
     public static void main(String... args) throws IOException {
         sb = new StringBuilder();
+        
         n = readInt();
         arr = new int[n];
         for (int i = 0; i < n; i++) arr[i] = readInt();
@@ -16,21 +18,23 @@ public class Main {
         Arrays.sort(arr);
         
         m = readInt();
-        for (int i = 0; i < m; i++) sb.append(binarySearch(readInt())).append(" ");
+        for (int i = 0; i < m; i++) {
+            target = readInt();
+            
+            l = 0;
+            r = n-1;
+            flag = false;
+            while (l <= r) {
+                mid = (l+r)>>1;
+                if (arr[mid] == target) {flag = true; break;}
+                else if (arr[mid] < target) l = mid+1;
+                else r = mid-1;
+            }
+            
+            sb.append(flag ? 1 : 0).append(" ");
+        }
 
         System.out.print(sb);
-    }
-    
-    private static int binarySearch(int target) {
-        int l = 0, r = n-1;
-        while (l <= r) {
-            int m = (l+r)/2;
-            if (arr[m] == target) return 1;
-            else if (arr[m] > target) r = m-1;
-            else l = m + 1;
-        }
-        
-        return 0;
     }
 
     public static int readInt() throws IOException {
