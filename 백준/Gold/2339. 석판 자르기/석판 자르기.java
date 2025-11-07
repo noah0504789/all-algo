@@ -17,7 +17,7 @@ public class Main {
             for (int j = 0; j < n; j++) arr[i][j] = readInt();
         }
         
-        memo = new HashMap<>();
+        //memo = new HashMap<>();
         
         cnt = solve(0,0,n-1,n-1,NONE);
 
@@ -31,8 +31,8 @@ public class Main {
         if (g == 0) return 0;
         
         long k = key(r1, c1, r2, c2, lastDir);
-        Integer m = memo.get(k);
-        if (m != null) return m;
+        //Integer m = memo.get(k);
+        //if (m != null) return m;
         
         int ways = 0;        
         for (int r = r1; r<= r2; r++) {
@@ -59,7 +59,7 @@ public class Main {
             }    
         }
         
-        memo.put(k, ways);
+        //memo.put(k, ways);
         return ways;
     }
     
