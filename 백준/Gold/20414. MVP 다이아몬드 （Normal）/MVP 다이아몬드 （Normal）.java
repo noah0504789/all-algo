@@ -37,26 +37,25 @@ public class Main {
         }
         
         dp = new int[n+1][d+1];
-        for (int i = 0; i <= n; i++) Arrays.fill(dp[i], -1_000_000_000);
+        for (int i = 0; i <= n; i++) Arrays.fill(dp[i], -1);
         
-        for (int x1 = 0; x1<=d; x1++) {
-            int sum = x1;
-            if (l[1] <= sum && sum <= u[1]) dp[1][x1] = x1;
+        for (int i = 0; i <= d; i++) {
+            if (l[1] <= i && i <= u[1]) dp[1][i] = i;
         }
         
         for (int i = 2; i <= n; i++) {
-            for (int prev = 0; prev <= d; prev++) {
-                if (dp[i-1][prev] == -1_000_000_000) continue;
+            for (int j = 0; j <= d; j++) {
+                if (dp[i-1][j] == -1) continue;
                 
-                int lo = Math.max(0, l[i]-prev);
-                int hi = Math.min(d, u[i]-prev);
-                if (lo > hi) continue;
-                for (int cur = lo; cur <= hi; cur++) dp[i][cur] = Math.max(dp[i][cur], dp[i-1][prev] + cur);
+                int lo = Math.max(0, l[i]-j);
+                int hi = Math.min(d, u[i]-j);
+                
+                for (int k = lo; k <= hi; k++) dp[i][k] = Math.max(dp[i][k], dp[i-1][j] + k);
             }
         }
-                
-        int ans = 0;
-        for (int last = 0; last <= d; last++) ans = Math.max(ans, dp[n][last]);
+        
+        ans = 0;
+        for (int i = 0; i <= d; i++) ans =Math.max(ans, dp[n][i]);
         
         System.out.print(ans);
     }    
