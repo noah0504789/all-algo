@@ -31,9 +31,9 @@ public class Main {
         r = k / m;
         c = k % m;
         
-        dp1 = new long[r][c];
-        for (int i = 0; i < r; i++) {
-            for (int j = 0; j < c; j++) {
+        dp1 = new long[r+1][c+1];
+        for (int i = 0; i <= r; i++) {
+            for (int j = 0; j <= c; j++) {
                 if (i == 0 && j == 0) {
                     dp1[i][j] = 1;
                     continue;
@@ -44,10 +44,12 @@ public class Main {
             }
         }
         
-        dp2 = new long[n][m];
-        for (int i = r-1; i < n; i++) {
-            for (int j = c-1; j < m; j++) {
-                if (i == r-1 && j == c-1) {
+        int h = n-r;
+        int w = m-c;
+        dp2 = new long[h][w];
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (i == 0 && j == 0) {
                     dp2[i][j] = 1;
                     continue;
                 }
@@ -57,7 +59,7 @@ public class Main {
             }
         }
 
-        System.out.print(dp1[r-1][c-1] * dp2[n-1][m-1]);
+        System.out.print(dp1[r][c] * dp2[h-1][w-1]);
     }
 
     public static int readInt() throws IOException {
