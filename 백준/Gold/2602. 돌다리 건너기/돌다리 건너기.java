@@ -21,19 +21,19 @@ public class Main {
         
         dp = new int[n][m][2];
         
-        for (int i = 0; i < m; i++) {
+        for (int i =0; i < m; i++) {
             if (road[0][i] == du[0]) dp[0][i][0] = 1;
             if (road[1][i] == du[0]) dp[0][i][1] = 1;
         }
         
-        for (int t = 1; t < n; t++) {
-            for (int r = 0; r < 2; r++) {
-                int or = 1-r;
-                for (int i = 0; i < m; i++) {
-                    if (road[r][i] != du[t]) continue;
+        for (int i = 1; i < n; i++) {
+            for (int r = 0; r <=1; r++) {
+                int or = r^1;
+                for (int j = 0; j < m; j++) {
+                    if (road[r][j] != du[i]) continue;
                     int sum = 0;
-                    for (int j= 0; j < i; j++) sum += dp[t-1][j][or];
-                    dp[t][i][r] = sum;
+                    for (int k = 0; k < j; k++) sum += dp[i-1][k][or];
+                    dp[i][j][r] = sum;
                 }
             }
         }
