@@ -5,10 +5,10 @@ public class Main {
     
     private static StringBuilder sb;
     private static int n, m, k, x, s, d, INF = Integer.MAX_VALUE;
+    private static int[] dist;
     private static Node[] adj;
     private static Queue<Integer> queue;
-    private static BitSet visited;
-    private static int[] dist;
+    private static BitSet visited;    
     
     public static void main(String... args) throws IOException {
         sb = new StringBuilder();
@@ -24,47 +24,43 @@ public class Main {
             d = readInt();
             
             adj[s] = new Node(d, adj[s]);
-            //adj[s] = new Node(d, adj[s]);
         }
         
-        queue = new ArrayDeque<>();
+        queue = new LinkedList<>();
         visited = new BitSet();
         dist = new int[n+1];
         
         bfs(x);
         
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= n; i++) {            
             if (dist[i] == k) sb.append(i+" ");
         }
-        
+
         System.out.print(sb.length() == 0 ? -1 : sb);
     }
     
-    private static void bfs(int v) {
+    private static void bfs(int x) {
         Arrays.fill(dist, INF);
         dist[x] = 0;
-        
         queue.offer(x);
         visited.set(x);
         
         while (!queue.isEmpty()) {
-            int val = queue.poll();
+            int v = queue.poll();
             
-            for (Node cur = adj[val]; cur != null; cur = cur.next) {
-                if (dist[cur.v] != INF) continue;                
-                if (visited.get(cur.v)) continue;
-
-                dist[cur.v] = dist[val] + 1;
-                visited.set(cur.v);
+            for (Node cur = adj[v]; cur != null; cur = cur.next) {
+                if (visited.get(cur.v) || dist[cur.v] != INF) continue;
+                
+                dist[cur.v] = dist[v] + 1;
+                visited.get(cur.v);
                 queue.offer(cur.v);
-            }
+            }                
         }
     }
     
     static class Node {
         int v;
         Node next;
-        
         Node(int v, Node next) {
             this.v=v;
             this.next=next;
