@@ -3,28 +3,29 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, ans;
-    private static int[] time, fin;
-    private static int[][] prereq;
+    private static int n, cnt, p, ans;
+    private static int[] time, dp;
+    private static List<Integer>[] prev;
     
     public static void main(String... args) throws IOException {
         n = readInt();
+        
         time = new int[n+1];
-        prereq = new int[n+1][];
-        for (int k = 1; k <= n; k++) {
-            int t = readInt();
-            int cnt = readInt();
-            time[k] = t;
-            prereq[k] = new int[cnt];
-            for (int i = 0; i < cnt; i++) prereq[k][i] = readInt();
+        prev = new ArrayList[n+1];
+
+        for (int i = 1; i <= n; i++) {            
+            time[i] = readInt();
+            prev[i] = new ArrayList<>();
+            cnt = readInt();
+            for (int j = 0; j < cnt; j++) prev[i].add(readInt());
         }
         
-        fin = new int[n+1];
-        for (int i = 1; i <= n; i++) {
-            int need = 0;
-            for (int p : prereq[i]) need = Math.max(need, fin[p]);
-            fin[i] = need+time[i];
-            ans = Math.max(ans, fin[i]);
+        dp = new int[n+1];
+        for (int i = 1; i<=n; i++) {
+            int best = 0;
+            for (int p_ : prev[i]) best = Math.max(best, dp[p_]);
+            dp[i] = best + time[i];
+            ans = Math.max(ans, dp[i]);
         }
 
         System.out.print(ans);
