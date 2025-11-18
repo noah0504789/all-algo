@@ -4,7 +4,7 @@ import java.util.*;
 public class Main {
     
     private static StringBuilder sb;
-    private static int n, m, a, b;
+    private static int n, m, cur, prev;
     private static int[] dp;
     private static List<Integer>[] pre;
     
@@ -13,30 +13,29 @@ public class Main {
         
         n = readInt();
         m = readInt();
-
-        pre = new ArrayList[n+1];
-        for (int i = 1; i <= n; i++) pre[i] = new ArrayList<>();
         
+        pre = new ArrayList[n+1];
+        for (int i = 0; i <= n; i++) pre[i] = new ArrayList<>();
         for (int i = 0; i < m; i++) {
-            a = readInt();
-            b = readInt();
+            prev = readInt();
+            cur = readInt();
             
-            pre[b].add(a);
+            pre[cur].add(prev);
         }
         
         dp = new int[n+1];
-        Arrays.fill(dp, 1);
-        dp[0] = 0;
-        
-        for (int i = 1; i <= n; i++) {
-            for (int p : pre[i]) {
-                dp[i] = Math.max(dp[i], dp[p]+1);
-            }
-        }
-        
-        for (int i = 1; i <= n; i++) sb.append(dp[i]+" ");
+        for (int i = 1; i <= n; i++) sb.append(dfs(i)+" ");
 
         System.out.print(sb);
+    }
+    
+    private static int dfs(int cur) {
+        if (dp[cur]>0) return dp[cur];
+        
+        int max = 0;
+        for (int p : pre[cur]) max = Math.max(max, dfs(p));
+        
+        return dp[cur] = max+1;
     }
 
     public static int readInt() throws IOException {
