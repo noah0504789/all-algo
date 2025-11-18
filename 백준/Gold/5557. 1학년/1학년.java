@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, s, e;
+    private static int n;
     private static int[] arr;
     private static long[] dp, next;
     
@@ -11,25 +11,26 @@ public class Main {
         n = readInt();
         arr = new int[n];
         for (int i = 0; i < n; i++) arr[i] = readInt();
-
+        
         dp = new long[21];
         dp[arr[0]] = 1;
-        
         for (int i = 1; i < n-1; i++) {
+            int cur = arr[i];
+            
             next = new long[21];
             
-            for (int s = 0; s<=20; s++) {
-                int plus = s+arr[i], minus = s-arr[i];
-                if (plus <= 20) next[plus] += dp[s];
-                if (minus >= 0) next[minus] += dp[s];
+            for (int j = 0; j <= 20; j++) {    
+                if (dp[j] == 0) continue;
+                
+                if (j+cur <= 20) next[j+cur] += dp[j];
+                if (j-cur >= 0) next[j-cur] += dp[j];
             }
+            
             dp = next;
         }
-                
+
         System.out.print(dp[arr[n-1]]);
     }
-    
-
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
