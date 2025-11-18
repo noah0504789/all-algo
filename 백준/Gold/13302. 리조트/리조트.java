@@ -5,11 +5,8 @@ public class Main {
     
     private static int n, m, INF = Integer.MAX_VALUE;
     // 날짜,남은쿠폰수
-    private static int[][] dp, table = {
-        {10_000,0},{25_000,1},{37_000,2}
-    }; 
+    private static int[][] dp;
     private static boolean[] x;    
-    private static boolean[][] visited;    
     
     public static void main(String... args) throws IOException {
         n = readInt();
@@ -18,18 +15,15 @@ public class Main {
         x = new boolean[n+1];
         for (int i = 0; i < m; i++) x[readInt()] = true;
         
-        dp = new int[n+2][101];
-        visited = new boolean[n+2][101];
+        dp = new int[n+1][n+1];
+        for (int i = 0; i <= n; i++) Arrays.fill(dp[i], INF);
         
         System.out.print(solve(1, 0));
     }
     
     private static int solve(int d, int c) {
         if (d > n) return 0;
-        if (c > 100) c =100;
-        if (visited[d][c]) return dp[d][c];
-        
-        visited[d][c] = true;
+        if (dp[d][c] != INF) return dp[d][c];
         
         int res = INF;
         
@@ -38,7 +32,7 @@ public class Main {
             res = Math.min(res, 10_000 + solve(d+1, c));
             res = Math.min(res, 25_000 + solve(d+3, c+1));
             res = Math.min(res, 37_000 + solve(d+5, c+2));
-            if (c>=3) res = Math.min(res, 37_000 + solve(d+1, c-3));
+            if (c>=3) res = Math.min(res, solve(d+1, c-3));
         }
         
         return dp[d][c] = res;
