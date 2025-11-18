@@ -10,14 +10,14 @@ public class Main {
     
     public static void main(String... args) throws IOException {
         n = readInt();
-        arr = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) arr[i][j] = readInt();
+        arr = new int[n+2][n+2];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) arr[i][j] = readInt();
         }
                 
-        dp = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) max = Math.max(max, dfs(i, j));
+        dp = new int[n+2][n+2];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) max = Math.max(max, dfs(i, j));
         }
 
         System.out.print(max);
@@ -29,7 +29,7 @@ public class Main {
         
         for (int[] d : dir) {
             int nr = r + d[0], nc = c + d[1];
-            if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
+            //if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
             if (arr[r][c] >= arr[nr][nc]) continue;
 
             max = Math.max(max, 1+dfs(nr, nc));
