@@ -3,57 +3,48 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, ans, INF = Integer.MAX_VALUE;
-    private static List<Integer> list;     
-    private static int[][][] dp;// idx/l/r
+    private static int v, n, cur, last, ans, INF = Integer.MAX_VALUE;
+    private static List<Integer> list;
+    private static int[][][] dp; //스테이지,왼,오
     
     public static void main(String... args) throws IOException {
         list = new ArrayList<>();
         
-        while ((n = readInt()) > 0) list.add(n);                    
+        while ((v=readInt())!=0) list.add(v);
         
-        n= list.size();
-        dp= new int[n+1][5][5];
+        n = list.size();
+        dp = new int[n+1][5][5];
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j < 5; j++) Arrays.fill(dp[i][j], INF);
         }
-        
         dp[0][0][0] = 0;
         
-        for (int i = 1; i <= n; i++) { 
-            int step = list.get(i-1);
-            for (int l = 0; l < 5; l++) {
-                for (int r = 0; r < 5; r++) {
-                    int prev = dp[i-1][l][r];
-                    if (prev >= INF) continue;
-                                        
-                    // 왼발로 누르기
-                    if (r != step) {
-                        int nl = step, nr = r;
-                        dp[i][nl][nr] = Math.min(dp[i][nl][nr], prev + cost(l, step));
-                    }
+        for (int i = 0; i < n; i++) {
+            cur = list.get(i);
+            
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 5; k++) {
+                    if (dp[i][j][k] == INF) continue;
                     
-                    // 오른발로 누르기
-                    if (l != step) {
-                        int nl = l, nr = step;
-                        dp[i][nl][nr] = Math.min(dp[i][nl][nr], prev + cost(r, step));
-                    }
+                    dp[i+1][cur][k] = Math.min(dp[i+1][cur][k], dp[i][j][k] + point(j, cur));
+                    dp[i+1][j][cur] = Math.min(dp[i+1][j][cur], dp[i][j][k] + point(k, cur));
                 }
-            }           
+            }
         }
         
         ans = INF;
-        for (int j = 0; j < 5; j++) {
-            for (int k = 0; k < 5; k++) ans = Math.min(ans, dp[n][j][k]);
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) ans = Math.min(ans, dp[n][i][j]);
         }
-
+        
         System.out.print(ans);
     }
     
-    private static int cost(int from, int to) {
-        if (from == to) return 1;
-        if (from == 0) return 2;
-        if ((from+to)%2 == 0) return 4;
+    private static int point(int prev, int cur) {
+        if (prev == cur) return 1;
+        if (prev == 0) return 2;
+        if ((prev+cur)%2 == 0) return 4;
+        
         return 3;
     }
 
