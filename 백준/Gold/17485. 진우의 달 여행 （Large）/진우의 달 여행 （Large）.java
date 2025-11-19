@@ -5,7 +5,7 @@ public class Main {
     
     private static int n, m, min, INF = Integer.MAX_VALUE;
     private static int[][] arr, dir = {
-        {1, -1}, {1, 0}, {1, 1}
+        {1, -1}, {1, 0}, {1, 1} // 왼쪽대각, 아래, 오른쪽대각
     };
     private static int[][][] dp;
     private static Queue<int[]> queue;
@@ -19,34 +19,23 @@ public class Main {
         queue = new LinkedList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                arr[i][j] = readInt();
-                Arrays.fill(dp[i][j], INF);                
+                arr[i][j] = readInt();                
+                if (i == 0) {
+                    dp[0][j][0] = arr[0][j];
+                    dp[0][j][1] = arr[0][j];
+                    dp[0][j][2] = arr[0][j];
+                } else {
+                    Arrays.fill(dp[i][j], INF);
+                }
             }
         }        
-
-        for (int j = 0; j < m; j++) {
-            for (int d = 0; d < dir.length; d++) {
-                dp[0][j][d] = arr[0][j];
-                queue.offer(new int[]{0, j, d});
-            }
-        }
         
-        while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
-            int cr = cur[0], cc = cur[1], cd = cur[2];
-            int cCost = dp[cr][cc][cd];
-            if (cCost == INF) continue;
-            
-            for (int i = 0; i < dir.length; i++) {
-                if (cd == i) continue;
-                int[] d = dir[i];
-                int nr = cr + d[0], nc = cc + d[1];
-                if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
-                if (dp[nr][nc][i] > cCost + arr[nr][nc]) {
-                    dp[nr][nc][i] = cCost + arr[nr][nc];
-                    queue.offer(new int[]{nr, nc, i});
-                }                
-            }
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (i-1>=0 && j+1<m) dp[i][j][0] = Math.min(dp[i-1][j+1][1], dp[i-1][j+1][2]) + arr[i][j];
+                if (i-1>=0) dp[i][j][1] = Math.min(dp[i-1][j][0], dp[i-1][j][2]) + arr[i][j];
+                if (i-1>=0 && j-1>=0) dp[i][j][2] = Math.min(dp[i-1][j-1][0], dp[i-1][j-1][1]) + arr[i][j];                
+            }    
         }
             
         min = INF;
