@@ -3,71 +3,55 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, max = 60;
+    private static int n, INF = Integer.MAX_VALUE;
     private static int[] arr;
-    private static int[][] PERMS = {
-        {9,3,1},{9,1,3},{3,9,1},{3,1,9},{1,9,3},{1,3,9}
-    }; 
-    private static int[][][] dp;
-    private static Queue<int[]> queue;
+    private static int[][] attack = {
+        {9, 3, 1}, {9, 1, 3}, {3, 9, 1}, {3, 1, 9}, {1, 3, 9}, {1, 9, 3}
+    };
+    private static long[][][] dp;
     
     public static void main(String... args) throws IOException {
         n = readInt();
-        
-        arr = new int[3];        
+        arr = new int[3];
         for (int i = 0; i < n; i++) arr[i] = readInt();
         
-        desc(arr);
-        
-        dp = new int[max+1][max+1][max+1];
-        for (int i = 0; i <= max; i++) {
-            for (int j = 0; j <= max; j++) Arrays.fill(dp[i][j], -1);
-        }
-        
-        queue = new LinkedList<>();
-        dp[arr[0]][arr[1]][arr[2]] = 0;
-        queue.offer(new int[]{arr[0],arr[1],arr[2]});
-        
-        while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
-            int d = dp[cur[0]][cur[1]][cur[2]];
-            if (cur[0] == 0 && cur[1] == 0 && cur[2] == 0) {
-                System.out.print(d);
-                return;
-            }
-            
-            for (int[] p : PERMS) {
-                int a = Math.max(0, cur[0]-p[0]);
-                int b = Math.max(0, cur[1]-p[1]);
-                int c = Math.max(0, cur[2]-p[2]);
-                
-                int[] next = new int[]{a, b, c};
-                desc(next);
-                
-                if (dp[next[0]][next[1]][next[2]] == -1) {
-                    dp[next[0]][next[1]][next[2]] = d+1;
-                    queue.offer(next);
-                }
-            }
-        }
+        dp = new long[61][61][61];
+
+        System.out.print(dfs(arr[0], arr[1], arr[2]));
     }
+    
+    private static long dfs(int a_, int b_, int c_) {
+        int[] sort = new int[]{a_, b_, c_};
+        desc(sort);
+        
+        int a = sort[0], b = sort[1], c = sort[2];
+        
+        if (a<=0) return 0;
+        else if (b<=0) {b=0; c=0;}
+        else if (c<=0) {c=0;}
+        
+        if (dp[a][b][c] > 0) return dp[a][b][c];
+        
+        long min = INF;
+        for (int[] att : attack) {            
+            min = Math.min(min, 1+dfs(a-att[0], b-att[1], c-att[2]));
+        }
+        
+        return dp[a][b][c] = min;
+    }   
     
     private static void desc(int[] arr) {
         Arrays.sort(arr);
-        reverse(arr);
-    }
-    
-    private static void reverse(int[] arr) {
-        int i = 0, j = arr.length-1;
-        while (i < j) {
-            int t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
-            i++;
-            j--;
+        int l = 0, r = arr.length-1;
+        while (l < r) {
+            int tmp = arr[l];
+            arr[l] = arr[r];
+            arr[r] = tmp;
+            l++;
+            r--;
         }
     }
-    
+
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
         boolean negative = false;       
