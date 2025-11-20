@@ -3,49 +3,45 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, m, min, INF = Integer.MAX_VALUE;
-    private static int[][] arr, dir = {
-        {1, -1}, {1, 0}, {1, 1} // 왼쪽대각, 아래, 오른쪽대각
-    };
-    private static int[][][] dp;
-    private static Queue<int[]> queue;
+    private static StringBuilder sb;
+    private static int n, m, INF = Integer.MAX_VALUE;
+    private static long ans;
+    private static int[][] arr;
+    private static long[][][] dp; // n, m, 방향(0-왼쪽대각, 1-위, 2-오른대각)
     
     public static void main(String... args) throws IOException {
         n = readInt();
         m = readInt();
         
         arr = new int[n][m];
-        dp = new int[n][m][3];
-        queue = new LinkedList<>();
+        dp = new long[n][m][3];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) Arrays.fill(dp[i][j], INF);
+        }
+        
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                arr[i][j] = readInt();                
-                if (i == 0) {
-                    dp[0][j][0] = arr[0][j];
-                    dp[0][j][1] = arr[0][j];
-                    dp[0][j][2] = arr[0][j];
-                } else {
-                    Arrays.fill(dp[i][j], INF);
-                }
+                arr[i][j] = readInt();
+                if (i == 0) dp[i][j][0] = dp[i][j][1] = dp[i][j][2] = arr[i][j];
             }
         }        
         
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (i-1>=0 && j+1<m) dp[i][j][0] = Math.min(dp[i-1][j+1][1], dp[i-1][j+1][2]) + arr[i][j];
-                if (i-1>=0) dp[i][j][1] = Math.min(dp[i-1][j][0], dp[i-1][j][2]) + arr[i][j];
-                if (i-1>=0 && j-1>=0) dp[i][j][2] = Math.min(dp[i-1][j-1][0], dp[i-1][j-1][1]) + arr[i][j];                
-            }    
+        for (int r = 1; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if (r-1>=0 && c-1>=0) dp[r][c][0] = Math.min(dp[r][c][0], Math.min(dp[r-1][c-1][1], dp[r-1][c-1][2]) + arr[r][c]);
+                if (r-1>=0) dp[r][c][1] = Math.min(dp[r][c][1], Math.min(dp[r-1][c][0], dp[r-1][c][2]) + arr[r][c]);
+                if (r-1>=0 && c+1<m) dp[r][c][2] = Math.min(dp[r][c][2], Math.min(dp[r-1][c+1][0], dp[r-1][c+1][1]) + arr[r][c]);
+            }
         }
-            
-        min = INF;
-        for (int j = 0; j < m; j++) {
-            min = Math.min(min, dp[n-1][j][0]);
-            min = Math.min(min, dp[n-1][j][1]);
-            min = Math.min(min, dp[n-1][j][2]);
+        
+        ans = INF;
+        for (int i = 0; i < m; i++) {
+            ans = Math.min(ans, dp[n-1][i][0]);
+            ans = Math.min(ans, dp[n-1][i][1]);
+            ans = Math.min(ans, dp[n-1][i][2]);
         }
 
-        System.out.print(min);
+        System.out.print(ans);
     }
 
     public static int readInt() throws IOException {
