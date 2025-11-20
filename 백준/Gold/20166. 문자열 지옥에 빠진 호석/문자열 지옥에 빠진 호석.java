@@ -5,14 +5,15 @@ public class Main {
     
     private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static StringBuilder sb;
+    private static String[] input;
     private static int n, m, k;
-    private static long sum;
-    private static String[] input, tc;
+    private static long ans;
+    private static String t;
     private static char[][] arr;
     private static int[][] dir = {
         {0, 1}, {0, -1}, {1, 0}, {-1, 0},
-        {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
-    };    
+        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+    };
     private static long[][][] dp;
     private static Map<String, Long> map;
     
@@ -20,7 +21,6 @@ public class Main {
         sb = new StringBuilder();
         
         input = br.readLine().split(" ");
-        
         n = Integer.parseInt(input[0]);
         m = Integer.parseInt(input[1]);
         k = Integer.parseInt(input[2]);
@@ -28,35 +28,33 @@ public class Main {
         arr = new char[n][m];
         for (int i = 0; i < n; i++) arr[i] = br.readLine().toCharArray();
         
-        tc = new String[k];
-        for (int i = 0; i < k; i++) tc[i] = br.readLine();
-        
         map = new HashMap<>();
-        
-        for (String t : tc) {
+        for (int tc = 0; tc < k; tc++) {
+            t = br.readLine();            
+            
             if (map.containsKey(t)) {
-                sum = map.get(t);
+                ans = map.get(t);
             } else {
                 dp = new long[n][m][t.length()];
-                sum = 0;            
+                ans = 0;
+                
                 for (int r = 0; r < n; r++) {
-                    for (int c = 0; c < m; c++) {                        
-                        sum += t.length() > 1 ? dfs(r, c, 0, t) : arr[r][c] == t.charAt(0) ? 1 : 0;
-                    }
-                }
-                map.put(t, sum);
+                    for (int c = 0; c < m; c++) ans += dfs(r, c, 0, t);
+                }    
+                
+                map.put(t, ans);
             }
             
-            sb.append(sum+"\n");
-        }
+            sb.append(ans+"\n");
+        }        
 
         System.out.print(sb);
     }
     
-    private static long dfs(int r, int c, int i, String t) {        
-        if (arr[r][c] != t.charAt(i)) return 0;
+    private static long dfs(int r, int c, int i, String t) {
+        if (arr[r][c] != t.charAt(i)) return 0;        
         if (i == t.length()-1) return 1;        
-        if (dp[r][c][i] > 0) return dp[r][c][i];        
+        if (dp[r][c][i] > 0) return dp[r][c][i];
         
         long sum = 0;
         for (int[] d : dir) {
@@ -65,5 +63,23 @@ public class Main {
         }
         
         return dp[r][c][i] = sum;
+    }
+
+    public static int readInt() throws IOException {
+        int r = 0, c = System.in.read();
+        boolean negative = false;       
+
+        while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
+        while (c >= '0' && c <= '9') {
+            r *= 10;
+            r += c - '0';
+            c = System.in.read();
+        }
+
+        return negative ? -r : r;
     }
 }
