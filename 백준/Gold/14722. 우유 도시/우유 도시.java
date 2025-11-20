@@ -2,33 +2,33 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-        
+    
     private static int n;
-    private static long ans;
     private static int[][] arr;
     private static long[][] dp;
     
     public static void main(String... args) throws IOException {
         n = readInt();
-        
         arr = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) arr[i][j] = readInt();
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) arr[r][c] = readInt();
         }
-        
-        dp =  new long[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {                
-                long best = 0L;
-                if (i > 0) best =Math.max(best, dp[i-1][j]);
-                if (j > 0) best =Math.max(best, dp[i][j-1]);
                 
-                if (arr[i][j] == best % 3) best++;
-                 
-                dp[i][j] = best;
+        dp = new long[n][n];
+        //dp[0][0] = 1;
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                //if (r == 0 && c == 0) continue;
+                
+                long u = r-1>=0 ? dp[r-1][c] : 0;
+                long l = c-1>=0 ? dp[r][c-1] : 0;                
+                long max = Math.max(u, l);
+                if (max % 3 == arr[r][c]) max++;
+                
+                dp[r][c] = max;
             }
-        }  
-        
+        }
+
         System.out.print(dp[n-1][n-1]);
     }
 
