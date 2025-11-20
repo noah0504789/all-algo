@@ -3,40 +3,34 @@ import java.util.*;
 
 public class Main {
     
-    private static int w, h, p = 100_000;
-    private static long ans;
-    private static int[][] DIR = {
+    private static int w, h, ans, p = 100_000;
+    private static int[][] dir = {
         {0, 1}, {1, 0}
     };
-    private static long[][][][] dp;
+    private static int[][][][] dp; // r, c, prevD, turned
     
     public static void main(String... args) throws IOException {
         w = readInt();
         h = readInt();
         
-        dp = new long[h+1][w+1][2][2];
-        for (int i = 1; i <= h; i++) {
-            for (int j = 1; j <= w; j++) {
-                //Arrays.fill(dp[i][j][0], -1);
-                //Arrays.fill(dp[i][j][1], -1);
-            }
-        }
+        dp = new int[h][w][2][2];
         
-        if (w > 1) ans += dfs(1, 2, 0, 0);
-        if (h > 1) ans += dfs(2, 1, 1, 0);
+        if (w > 1) ans += dfs(0, 1, 0, 0);
+        if (h > 1) ans += dfs(1, 0, 1, 0);
 
         System.out.print(ans % p);
     }
     
-    private static long dfs(int r, int c, int dir, int turned) {
-        if (r == h && c == w) return 1;
-        if (r >h||c>w) return 0;
-        if (dp[r][c][dir][turned]>0) return dp[r][c][dir][turned];
+    private static int dfs(int r, int c, int d, int turned) {        
+        if (r == h-1 && c == w-1) return 1;
+        if (r >= h || c >= w) return 0;
+        if (dp[r][c][d][turned] > 0) return dp[r][c][d][turned];
         
-        long v = dfs(r+DIR[dir][0], c+DIR[dir][1], dir, 0) % p;
-        if (turned==0) v += dfs(r+DIR[dir^1][0], c+DIR[dir^1][1], dir^1, 1) % p;
+        int sum = 0;
+        sum += dfs(r+dir[d][0], c+dir[d][1], d, 0);
+        if (turned == 0) sum += dfs(r+dir[d^1][0], c+dir[d^1][1], d^1, 1);
         
-        return dp[r][c][dir][turned] = v % p;
+        return dp[r][c][d][turned] = sum % p;
     }
 
     public static int readInt() throws IOException {
