@@ -4,33 +4,34 @@ import java.util.*;
 public class Main {
     
     private static int n;
-    private static int[] a, b;
-    private static long[][] dp; // 남은 l갯수, 남은 r갯수
+    private static int[] left, right;
+    private static long[][] dp; // l, r
     
     public static void main(String... args) throws IOException {
         n = readInt();
         
-        a = new int[n];
-        for (int i = 0; i < n; i++) a[i] = readInt();
+        left = new int[n+1];
+        for (int i = 1; i <= n; i++) left[i] = readInt();
         
-        b = new int[n];
-        for (int i = 0; i < n; i++) b[i] = readInt();
+        right = new int[n+1];
+        for (int i = 1; i <= n; i++) right[i] = readInt();
         
         dp = new long[n+1][n+1];
-        for (int i = n-1; i >= 0; i--) {
-            for (int j = n-1; j >= 0; j--) {
-                // 왼
-                dp[i][j] = Math.max(dp[i][j], dp[i+1][j]);
-                
-                // 왼+오
-                dp[i][j] = Math.max(dp[i][j], dp[i+1][j+1]);
-                
-                // 오
-                if (a[i] > b[j]) dp[i][j] = Math.max(dp[i][j], dp[i][j+1] + b[j]);
-            }
-        }
+        for (int i = 0; i <= n; i++) Arrays.fill(dp[i], -1);
 
-        System.out.print(dp[0][0]);
+        System.out.print(dfs(1, 1));
+    }
+    
+    private static long dfs(int l, int r) {
+        if (l > n || r > n) return 0;
+        if (dp[l][r] != -1) return dp[l][r];
+        
+        long max = 0;
+        max = Math.max(max, dfs(l+1, r));
+        max = Math.max(max, dfs(l+1, r+1));
+        if (left[l] > right[r]) max = Math.max(max, right[r] + dfs(l, r+1));
+        
+        return dp[l][r] = max;
     }
 
     public static int readInt() throws IOException {
