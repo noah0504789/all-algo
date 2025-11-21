@@ -14,7 +14,7 @@ public class Main {
         for (int i = 0; i < m; i++) closed[readInt()] = true;
         
         dp = new int[n+1][n+1];
-        for (int i = 1; i <= n; i++) Arrays.fill(dp[i], INF);
+        for (int i = 0; i <= n; i++) Arrays.fill(dp[i], INF);
 
         System.out.print(dfs(1, 0));
     }
@@ -23,17 +23,17 @@ public class Main {
         if (d > n) return 0;
         if (dp[d][c] != INF) return dp[d][c];
         
-        int min = INF;
+        int res = INF;
         if (closed[d]) {
-            min = dfs(d+1, c-3);
+            res = dfs(d+1, c);
         } else {
-            min = Math.min(min, 10000+dfs(d+1, c));
-            min = Math.min(min, 25000+dfs(d+3, c+1));
-            min = Math.min(min, 37000+dfs(d+5, c+2));
-            if (c>=3) min = Math.min(min, dfs(d+1, c-3));    
+            res = Math.min(res, 10000+dfs(d+1, c));
+            res = Math.min(res, 25000+dfs(d+3, c+1));
+            res = Math.min(res, 37000+dfs(d+5, c+2));
+            if (c>=3) res = Math.min(res, dfs(d+1, c-3));    
         }
         
-        return dp[d][c] = min;
+        return dp[d][c] = res;
     }
 
     public static int readInt() throws IOException {
