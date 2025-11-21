@@ -4,38 +4,36 @@ import java.util.*;
 public class Main {
     
     private static int n, m, INF = Integer.MAX_VALUE;
-    // 날짜,남은쿠폰수
-    private static int[][] dp;
-    private static boolean[] x;    
+    private static boolean[] closed;
+    private static int[][] dp; // n일차,남은쿠폰수
     
     public static void main(String... args) throws IOException {
         n = readInt();
         m = readInt();
-        
-        x = new boolean[n+1];
-        for (int i = 0; i < m; i++) x[readInt()] = true;
+        closed = new boolean[n+1];
+        for (int i = 0; i < m; i++) closed[readInt()] = true;
         
         dp = new int[n+1][n+1];
-        for (int i = 0; i <= n; i++) Arrays.fill(dp[i], INF);
-        
-        System.out.print(solve(1, 0));
+        for (int i = 1; i <= n; i++) Arrays.fill(dp[i], INF);
+
+        System.out.print(dfs(1, 0));
     }
     
-    private static int solve(int d, int c) {
+    private static int dfs(int d, int c) {        
         if (d > n) return 0;
         if (dp[d][c] != INF) return dp[d][c];
         
-        int res = INF;
-        
-        if (x[d]) {res = solve(d+1, c);}
-        else {
-            res = Math.min(res, 10_000 + solve(d+1, c));
-            res = Math.min(res, 25_000 + solve(d+3, c+1));
-            res = Math.min(res, 37_000 + solve(d+5, c+2));
-            if (c>=3) res = Math.min(res, solve(d+1, c-3));
+        int min = INF;
+        if (closed[d]) {
+            min = dfs(d+1, c-3);
+        } else {
+            min = Math.min(min, 10000+dfs(d+1, c));
+            min = Math.min(min, 25000+dfs(d+3, c+1));
+            min = Math.min(min, 37000+dfs(d+5, c+2));
+            if (c>=3) min = Math.min(min, dfs(d+1, c-3));    
         }
         
-        return dp[d][c] = res;
+        return dp[d][c] = min;
     }
 
     public static int readInt() throws IOException {
