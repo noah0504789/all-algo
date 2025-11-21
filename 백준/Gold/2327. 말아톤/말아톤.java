@@ -3,41 +3,33 @@ import java.util.*;
 
 public class Main {
     
-    private static int h, n, min, maxS, maxH, INF = Integer.MAX_VALUE;
-    private static int[] height, speed, dp;
+    private static int h, n;
+    private static int[] speed, height, dp;
     
     public static void main(String... args) throws IOException {
         h = readInt();
         n = readInt();
-        
-        height = new int[n];
         speed = new int[n];
-        for (int i = 0; i < n; i++) {
-            height[i] = readInt();            
+        height = new int[n];
+        for (int i =0; i < n; i++) {
+            height[i] = readInt();
             speed[i] = readInt();
         }
         
         dp = new int[h+1];
         Arrays.fill(dp, -1);
-        dp[0] = INF;
-        
+        dp[0] = Integer.MAX_VALUE;
         for (int i = 0; i < n; i++) {
-            int hi = height[i], si = speed[i];
+            int h_ = height[i], s_ = speed[i];
             
-            for (int j = h-hi; j>=0; j--) {
-                if (dp[j] == -1) continue;
-                
-                int nh = j + hi;
-                if (nh > h) continue;
-                
-                int cand = Math.min(dp[j], si);
-                dp[nh] = Math.max(dp[nh], cand);
+            for (int j = h-h_; j >= 0; j--) {
+                int cand = Math.min(s_, dp[j]);
+                dp[j+h_] = Math.max(dp[j+h_], cand);
             }
         }
 
         System.out.print(dp[h]);
     }
-
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
