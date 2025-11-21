@@ -3,21 +3,25 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, max;
-    private static int[][] arr, dp, dir = {
-        {0, 1}, {0, -1}, {1, 0}, {-1, 0}
+    private static int n;
+    private static long max;
+    private static int[][] arr, dir = {
+        {0, 1},{0, -1},{1, 0},{-1, 0}
     };
+    private static int[][] dp; // 좌표(r, c)
     
     public static void main(String... args) throws IOException {
         n = readInt();
-        arr = new int[n+2][n+2];
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) arr[i][j] = readInt();
+        arr = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) arr[i][j] = readInt();
         }
-                
-        dp = new int[n+2][n+2];
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) max = Math.max(max, dfs(i, j));
+        
+        dp = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                max = Math.max(max, dfs(i, j));
+            }
         }
 
         System.out.print(max);
@@ -25,17 +29,18 @@ public class Main {
     
     private static int dfs(int r, int c) {
         if (dp[r][c] > 0) return dp[r][c];
-        int max = 1;
+        int cv = arr[r][c];
         
+        int m = 1;
         for (int[] d : dir) {
             int nr = r + d[0], nc = c + d[1];
-            //if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
-            if (arr[r][c] >= arr[nr][nc]) continue;
-
-            max = Math.max(max, 1+dfs(nr, nc));
+            if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
+            if (cv >= arr[nr][nc]) continue;
+            
+            m = Math.max(m, 1 + dfs(nr, nc));
         }
         
-        return dp[r][c] = max;
+        return dp[r][c] = m;
     }
 
     public static int readInt() throws IOException {
