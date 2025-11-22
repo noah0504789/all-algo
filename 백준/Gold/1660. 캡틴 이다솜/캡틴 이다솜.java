@@ -25,7 +25,7 @@ public class Main {
         
         for (int t_ : tetra) {
             for (int i = t_; i <= n; i++) {
-                if (dp[i-t_]+1 < dp[i]) dp[i] = dp[i-t_]+1;
+                dp[i] = Math.min(dp[i], dp[i-t_]+1);
             }
         }
 
