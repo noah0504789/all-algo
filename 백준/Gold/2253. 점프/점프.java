@@ -5,7 +5,8 @@ public class Main {
     
     private static int n, m, ans, INF = 1_000_000_000;
     private static boolean[] unavailable;
-    private static int[][] dp;
+    private static boolean[][] dp;
+    private static Queue<int[]> queue;
     
     public static void main(String... args) throws IOException {
         n = readInt();
@@ -13,35 +14,46 @@ public class Main {
         unavailable = new boolean[n+1];
         for (int i = 0; i < m; i++) unavailable[readInt()] = true;
         
+        if (n == 2) {
+            System.out.print(1);
+            return;
+        }
+        
         if (unavailable[2]) {
             System.out.print(-1);
             return;
         }
         
-        dp = new int[n+1][151];
-        for (int i = 1; i <= n; i++) Arrays.fill(dp[i], INF);        
+        dp = new boolean[n+1][151];
+        dp[2][1] = true;        
         
-        ans = dfs(2, 1);
+        queue = new LinkedList<>();
+        queue.offer(new int[]{2, 1, 1});
         
-        System.out.print(ans == INF ? -1 : ans + 1);
+        ans = bfs();
+        
+        System.out.print(ans == INF ? -1 : ans);
     }
     
-    private static int dfs(int i, int s) {
-        if (i == n) return 0;
-        if (s <= 0 || s > 150) return INF;
-        if (dp[i][s] != INF) return dp[i][s];        
-        
-        int min = INF;
-        for (int ns = s-1; ns <= s+1; ns++) {
-            if (ns <= 0 || ns > 150) continue;
-            int ni = i + ns;
-            if (ni > n) continue;
-            if (unavailable[ni]) continue;
-                        
-            min = Math.min(min, 1+dfs(ni, ns));
+    private static int bfs() {
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+            int i = cur[0], j = cur[1], v = cur[2];
+            
+            for (int nv = v-1; nv <= v+1; nv++) {
+                if (nv <= 0 || nv > 150) continue;
+                int ni = i + nv;
+                if (ni == n) return j+1;
+                if (ni > n) continue;
+                if (unavailable[ni]) continue;
+                if (dp[ni][nv]) continue;
+                
+                dp[ni][nv] = true;
+                queue.offer(new int[]{ni, j+1, nv});
+            }
         }
         
-        return dp[i][s] = min;
+        return INF;
     }
 
     public static int readInt() throws IOException {
