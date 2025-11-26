@@ -7,7 +7,7 @@ public class Main {
     private static StringBuilder sb = new StringBuilder();
     private static String pattern, str;
     private static int tc, n, m;
-    private static boolean[][] dp; // pattern 0~i가 str 0~j와 매칭하는지 여부
+    private static Boolean[][] dp; // pattern 0~i가 str 0~j와 매칭하는지 여부
     
     public static void main(String... args) throws IOException {
         pattern = br.readLine();
@@ -18,25 +18,27 @@ public class Main {
             str = br.readLine();
             m = str.length();
             
-            dp = new boolean[n+1][m+1];
-            dp[0][0] = true;
-            for (int i = 1; i <= n; i++) {
-                if (pattern.charAt(i-1) == '*') dp[i][0] = dp[i-1][0];
-                else dp[i][0] = false;
-            }
+            dp = new Boolean[n+1][m+1];            
             
-            for (int i = 1; i <= n; i++) {
-                char p = pattern.charAt(i-1);
-                for (int j = 1; j <= m; j++) {
-                    char c = str.charAt(j-1);
-                    if (p == '*') dp[i][j] = dp[i-1][j] || dp[i][j-1];
-                    else dp[i][j] = (p==c) && dp[i-1][j-1];
-                }
-            }
-            
-            if(dp[n][m]) sb.append(str + "\n");
+            if(dfs(0,0)) sb.append(str + "\n");
         }
 
         System.out.print(sb);
     }    
+    
+    private static boolean dfs(int i, int j) {
+        if (i == n) return j == m;
+        if (dp[i][j] != null) return dp[i][j];
+        
+        char p = pattern.charAt(i);
+        boolean res = false;
+        if (p=='*') {
+            res = dfs(i+1,j);
+            if (!res && j+1 <= m) res = dfs(i, j+1);
+        } else if (j < m && p == str.charAt(j)) {
+            res = dfs(i+1, j+1);
+        }        
+        
+        return dp[i][j] = res;
+    }
 }
