@@ -15,33 +15,20 @@ public class Main {
             dp = new int[n+1][m+1];
             for (int i = 1; i <= n; i++) {
                 for (int j = 1; j <= m; j++) {
-                    arr[i][j] = readInt();
-                    dp[i][j] = dp[i][j-1] + dp[i-1][j] - dp[i-1][j-1] + arr[i][j];
+                    arr[i][j] = readInt();                    
                 }
             }
             
             max = 0;
-            
-            for (int len = 1; len <= Math.min(n, m); len++) {
-                for (int sr = 1; sr <= n; sr++) {                    
-                    boolean flag = false;
-                    int dr = sr + len -1;
-                    if (dr > n) break;        
-                    
-                    for (int sc = 1; sc <= m; sc++) { 
-                        int dc = sc + len -1;
-                        if (dc > m) break;
-                        
-                        if (len*len==val(sr, sc, dr, dc)) {
-                            max = len;
-                            flag = true;
-                            break;
-                        }
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= m; j++) {
+                    if (arr[i][j] == 1) {
+                        dp[i][j] = Math.min(dp[i-1][j], Math.min(dp[i-1][j-1], dp[i][j-1]))+1;
+                        max = Math.max(max, dp[i][j]);
                     }
-                    
-                    if (flag) break;
+                    else dp[i][j] = 0;
                 }
-            }
+            }            
             
             sb.append(max+"\n");
         }
