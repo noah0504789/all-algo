@@ -21,15 +21,8 @@ public class Main {
         
         for (int i = 0; i < n; i++) {
             ps[0] = prev[0];
-            for (int t = 1; t <= s; t++) ps[t] = (ps[t-1] + prev[t]) % p;
-            
-            for (int t = 0; t <= s; t++) {
-                int val = ps[t];
-                int lo = t-25;                
-                if (lo > 0) val = (val - ps[lo-1] + p) % p;
-                
-                dp[t] = val;
-            }
+            for (int t = 1; t <= s; t++) ps[t] = (ps[t-1] + prev[t]) % p;            
+            for (int t = 0; t <= s; t++) dp[t] = (ps[t] - (t-26 >= 0 ? ps[t-26] : 0) + p) % p;
             
             tmp = prev;
             prev = dp;
