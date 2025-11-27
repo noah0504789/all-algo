@@ -3,49 +3,49 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, m, ans;
-    private static int[][] board, dp;
-        
+    private static int n, m, x, y, l, f, max, ans;
+    private static int[][] arr, dp;
+    
     public static void main(String... args) throws IOException {
         n = readInt();
         m = readInt();
-        board = new int[n][n];
-        for (int i_ = 0; i_ < m; i_++) {
-            int c = readInt();
-            int r = readInt();
-            int l = readInt();
-            int f = readInt();
+        
+        arr = new int[n][n];
+        for (int m_ = 0; m_ < m; m_++) {
+            x = readInt();
+            y = readInt();
+            l = readInt();
+            f = readInt();
             
-            //if (f == 0) continue;
-            
-            for (int i = r; i < r+l; i++) {
-                for (int j = c; j < c+l; j++) board[i][j] = f;
+            for (int r = y; r < y + l; r++) {
+                for (int c = x; c < x + l; c++) arr[r][c] = f;
             }
         }
-                
+        
         for (int a = 1; a <= 7; a++) {
-            for (int b = a; b <= 7; b++) {
-                //for (int i = 0; i < n; i++) Arrays.fill(dp[i], 0);
+            for (int b = 1; b <= 7; b++) {
                 dp = new int[n][n];
                 
-                for (int i = 0; i < n; i++) {
-                    for (int j = 0; j < n; j++) {
-                        int f = board[i][j];                        
+                for (int r = 0; r < n; r++) {
+                    for (int c = 0; c < n; c++) {
+                        f = arr[r][c];
+                        
                         if (f != a && f != b) {
-                            dp[i][j] = 0;
+                            dp[r][c] = 0;
                         } else {
-                            int up = i-1>=0 ? dp[i-1][j]: 0;
-                            int left = j-1>=0 ? dp[i][j-1]:0;
-                            int ul = i-1>=0 && j-1>=0 ? dp[i-1][j-1] : 0;
-                            dp[i][j] = Math.min(up, Math.min(left, ul)) + 1;
-                            ans = Math.max(ans, dp[i][j]);
+                            int up = r-1>=0 ? dp[r-1][c] : 0;
+                            int left = c-1>=0 ? dp[r][c-1] : 0;
+                            int upLeft = r-1>=0 && c-1>=0 ? dp[r-1][c-1] : 0;
+                            
+                            dp[r][c] = Math.min(up, Math.min(left, upLeft)) + 1;
+                            max = Math.max(max, dp[r][c]);
                         }
                     }
                 }
             }
         }
 
-        System.out.print(ans*ans);
+        System.out.print(max * max);
     }
 
     public static int readInt() throws IOException {
