@@ -3,48 +3,46 @@ import java.util.*;
 
 public class Main {
         
-    private static StringBuilder sb = new StringBuilder(), sb2 = new StringBuilder();
-    private static int n, a, b, len;
-    private static int[] lisVal, lisIdx, parent;
+    private static StringBuilder sb = new StringBuilder();
+    private static int n, len, cnt;
+    private static int[] lisIdx, tails, parent;
     private static int[][] wires;
-    private static boolean[] inLis;
+    private static boolean[] isLis;
     
     public static void main(String... args) throws IOException {
         n = readInt();
         wires = new int[n][2];
-        for (int i = 0; i < n; i++) {
-            a = readInt();
-            b = readInt();
-            wires[i][0] = a;
-            wires[i][1] = b;
+        for (int i =0; i < n; i++) {
+            wires[i][0] = readInt();
+            wires[i][1] = readInt();
         }
         
         Arrays.sort(wires, Comparator.comparingInt(o -> o[0]));
         
-        lisVal = new int[n];
         lisIdx = new int[n];
+        tails = new int[n];
         parent = new int[n];
         
         for (int i = 0; i < n; i++) {
-            b = wires[i][1];
-            int pos = lowerBound(len, b);
-            lisVal[pos] = b;
+            int x = wires[i][1];
+            int pos = lowerBound(len, x);
+            tails[pos] = x;
             lisIdx[pos] = i;
-            parent[i] = pos>0?lisIdx[pos-1] : -1;
-            
-            if (pos == len) len++;
+            parent[i] = pos-1>=0?lisIdx[pos-1] : -1;
+            if (len == pos) len++;
         }
         
-        inLis = new boolean[n];
+        isLis = new boolean[n];
         int idx = lisIdx[len-1];
         while (idx != -1) {
-            inLis[idx] = true;
+            isLis[idx] = true;
             idx = parent[idx];
         }
         
-        sb.append(n-len).append("\n");
-        for (int i = 0; i < n; i++) {
-            if (!inLis[i]) sb.append(wires[i][0]).append("\n");
+        sb.append((n-len)+"\n");
+        
+        for (int i = 0; i <n; i++) {
+            if (!isLis[i]) sb.append(wires[i][0]+"\n");
         }
 
         System.out.print(sb);
@@ -54,8 +52,8 @@ public class Main {
         int l = 0;
         while (l < r) {
             int m = (l+r)>>>1;
-            if (lisVal[m] >= x) r = m;
-            else l = m+1;
+            if (tails[m]>=x) r=m;
+            else l=m+1;
         }
         return l;
     }
