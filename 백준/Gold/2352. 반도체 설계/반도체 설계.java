@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-        
+    
     private static int n, len;
     private static int[] arr, tails;
     
@@ -11,14 +11,14 @@ public class Main {
         arr = new int[n];
         for (int i = 0; i < n; i++) arr[i] = readInt();
         
-        tails= new int[n];
+        tails = new int[n];
         for (int i = 0; i < n; i++) {
             int x = arr[i];
             int pos = lowerBound(len, x);
             tails[pos] = x;
-            if (len == pos) len++;
+            if (pos == len) len++;
         }
-        
+
         System.out.print(len);
     }
     
@@ -26,7 +26,7 @@ public class Main {
         int l = 0;
         while (l < r) {
             int m = (l+r)>>>1;
-            if (tails[m] >= x) r = m;
+            if (tails[m]>=x) r = m;
             else l = m+1;
         }
         return l;
