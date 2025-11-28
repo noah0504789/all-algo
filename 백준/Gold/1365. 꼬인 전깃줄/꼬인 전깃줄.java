@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-        
+    
     private static int n, len;
     private static int[] arr, tails;
     
