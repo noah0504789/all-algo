@@ -2,18 +2,15 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    
-    private static int n, m, p = 1_000_000_007;
-    private static long g, ans;    
+        
+    private static int n, m, p = 1_000_000_007;    
+    private static long g, ans;
     
     public static void main(String... args) throws IOException {
         n = readInt();
-        
         for (int i = 0; i < n-1; i++) {
-            m = readInt() % p;
-            g = (m * ((g+1) % p)) % p;
-            
-            ans = (ans + g) % p;            
+            g = (readInt() * ((g+1) % p)) % p;
+            ans = (ans + g) % p;
         }
 
         System.out.print(ans);
