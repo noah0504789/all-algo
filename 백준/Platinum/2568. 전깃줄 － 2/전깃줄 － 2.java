@@ -4,8 +4,8 @@ import java.util.*;
 public class Main {
         
     private static StringBuilder sb = new StringBuilder();
-    private static int n, len, cnt;
-    private static int[] lisIdx, tails, parent;
+    private static int n, len, idx;
+    private static int[] tailsIdx, tails, parent;
     private static int[][] wires;
     private static boolean[] isLis;
     
@@ -19,30 +19,29 @@ public class Main {
         
         Arrays.sort(wires, Comparator.comparingInt(o -> o[0]));
         
-        lisIdx = new int[n];
+        tailsIdx = new int[n];
         tails = new int[n];
         parent = new int[n];
         
         for (int i = 0; i < n; i++) {
-            int x = wires[i][1];
-            int pos = lowerBound(len, x);
-            tails[pos] = x;
-            lisIdx[pos] = i;
-            parent[i] = pos-1>=0?lisIdx[pos-1] : -1;
-            if (len == pos) len++;
+            int b = wires[i][1];
+            int pos = lowerBound(len, b);
+            tails[pos] = b;
+            tailsIdx[pos] = i;
+            parent[i] = pos-1>=0 ? tailsIdx[pos-1] : -1;
+            if (pos == len) len++;
         }
         
-        isLis = new boolean[n];
-        int idx = lisIdx[len-1];
+        isLis = new boolean[n+1];
+        idx = tailsIdx[len-1];
         while (idx != -1) {
             isLis[idx] = true;
             idx = parent[idx];
         }
         
-        sb.append((n-len)+"\n");
-        
-        for (int i = 0; i <n; i++) {
-            if (!isLis[i]) sb.append(wires[i][0]+"\n");
+        sb.append(n-len).append("\n");
+        for (int i = 0; i < n; i++) {
+            if (!isLis[i]) sb.append(wires[i][0]).append("\n");
         }
 
         System.out.print(sb);
