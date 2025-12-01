@@ -5,33 +5,29 @@ public class Main {
     
     private static int n;
     private static int[][] arr, dp;
-    private static long ans;
     
     public static void main(String... args) throws IOException {
         n = readInt();
+        
         arr = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) arr[i][j] = readInt();
+        }
+        
         dp = new int[n][n];
         
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j<=i; j++) arr[i][j] = readInt();
-        }
+        System.out.print(dfs(0, 0));
+    }
+    
+    private static int dfs(int r, int c) {
+        if (r == n-1) return arr[r][c];
+        if (dp[r][c] != 0) return dp[r][c];
         
-        dp[0][0] = arr[0][0];
+        int max = 0;
+        max = Math.max(max, arr[r][c] + dfs(r+1, c));
+        if (c <= r) max = Math.max(max, arr[r][c] + dfs(r+1, c+1));
         
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j<=i; j++) {
-                if (j == 0) {
-                    dp[i][j] = dp[i-1][j] + arr[i][j];
-                    continue;
-                }
-                
-                dp[i][j] = Math.max(dp[i-1][j-1], dp[i-1][j]) + arr[i][j];
-            }
-        }
-        
-        for (int i = 0; i < n; i++) ans = Math.max(ans, dp[n-1][i]);
-
-        System.out.print(ans);
+        return dp[r][c] = max;
     }
 
     public static int readInt() throws IOException {
