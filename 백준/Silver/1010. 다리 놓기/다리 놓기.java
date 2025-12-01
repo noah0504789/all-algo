@@ -2,46 +2,48 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static StringBuilder sb;
-
-    private static int[][] dp;
-    private static int tc, n, r;
-
+        
+    private static StringBuilder sb = new StringBuilder();
+    private static int tc, n, r, maxN;
+    private static int[][] comb, tArr; // n, r
+    
     public static void main(String... args) throws IOException {
-        sb = new StringBuilder();
-
         tc = readInt();
-
-        for (int i = 0; i < tc; i++) {
-            r = readInt();
-            n = readInt();
-
-            dp = new int[n+1][r+1];
-
-            sb.append(comb(n, r)).append("\n");
+        tArr = new int[tc][2];
+        for (int i = 0; i < tc; i++) {            
+            tArr[i][1] = readInt();
+            tArr[i][0] = readInt();            
+            
+            maxN = Math.max(maxN, tArr[i][0]);
         }
-
+        
+        comb = new int[maxN+1][maxN+1];
+        comb[0][0] = 1;
+        for (int i = 1; i <= maxN; i++) {
+            comb[i][0] = comb[i][i] = 1;
+            for (int j = 1; j < i; j++) comb[i][j] = comb[i-1][j-1] + comb[i-1][j];
+        }
+        
+        for (int i = 0; i < tc; i++) sb.append(comb[tArr[i][0]][tArr[i][1]] + "\n");
+        
         System.out.print(sb);
-    }
-
-    public static int comb(int n, int r) {
-        if (r > n) return 0;
-        if (n == 0 || r == 0 || n == r) return 1;
-        if (dp[n][r] > 0) return dp[n][r];
-
-        return dp[n][r] = comb(n-1, r) + comb(n-1, r-1);
     }
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
+        boolean negative = false;       
 
         while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
         while (c >= '0' && c <= '9') {
             r *= 10;
             r += c - '0';
             c = System.in.read();
         }
 
-        return r;
+        return negative ? -r : r;
     }
 }
