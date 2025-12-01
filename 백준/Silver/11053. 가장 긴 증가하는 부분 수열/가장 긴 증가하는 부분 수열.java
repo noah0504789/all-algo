@@ -12,20 +12,19 @@ public class Main {
         for (int i = 0; i < n; i++) arr[i] = readInt();
         
         tails = new int[n];
-        len = 0;
+
         for (int i = 0; i < n; i++) {
             int x = arr[i];
-            int pos = lowerbound(len, x);
+            int pos = lowerBound(len, x);
             tails[pos] = x;
             if (pos == len) len++;
         }
-
+        
         System.out.print(len);
     }
     
-    private static int lowerbound(int r, int x) {
+    private static int lowerBound(int r, int x) {
         int l = 0;
-        
         while (l < r) {
             int m = (l+r)>>>1;
             if (tails[m] >= x) r = m;
