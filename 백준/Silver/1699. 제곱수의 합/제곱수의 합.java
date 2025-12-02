@@ -3,17 +3,17 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, ans, INF = Integer.MAX_VALUE/2;
+    private static int n;
     private static int[] dp;
     
     public static void main(String... args) throws IOException {
         n = readInt();
-               
-        dp = new int[n+1];
-        Arrays.fill(dp, INF);
-        dp[0] = 0;
+        dp = new int[n+1];        
+        
         for (int i = 1; i <= n; i++) {
-            for (int j = 1; j*j<=i; j++) dp[i] = Math.min(dp[i], dp[i-j*j]+1);
+            dp[i] = i;
+            
+            for (int j = 1; j * j <= i; j++) dp[i] = Math.min(dp[i], dp[i-j*j] + 1);
         }
         
         System.out.print(dp[n]);
