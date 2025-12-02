@@ -4,20 +4,20 @@ import java.util.*;
 public class Main {
     
     private static int n;
-    private static int[] arr;
+    private static int[] cards;
     private static long[] dp;
     
     public static void main(String... args) throws IOException {
         n = readInt();
-        arr = new int[n+1];
-        for (int i = 1; i <= n; i++) arr[i] = readInt();
+        cards = new int[n+1];
+        for (int i = 1; i <= n; i++) cards[i] = readInt();
         
         dp = new long[n+1];
-        dp[1] = arr[1];
-        for (int i = 2; i <= n; i++) {
-            for (int j = i; j >= 0; j--) dp[i] = Math.max(dp[i], dp[i-j]+arr[j]);
+        for (int i = 1; i <= n; i++) {
+            int card = cards[i];
+            for (int j = i; j <= n; j++) dp[j] = Math.max(dp[j], dp[j-i] + card);
         }
-
+        
         System.out.print(dp[n]);
     }
 
