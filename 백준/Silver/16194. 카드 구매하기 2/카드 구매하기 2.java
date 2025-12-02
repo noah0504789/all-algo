@@ -3,21 +3,24 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, INF = Integer.MAX_VALUE/2;
+    private static int n, INF = Integer.MAX_VALUE;
     private static int[] arr, dp;
     
     public static void main(String... args) throws IOException {
         n = readInt();
         arr = new int[n+1];
-        for (int i =1; i <= n; i++) arr[i] = readInt();
+        for (int i = 1; i <= n; i++) arr[i] = readInt();
         
         dp = new int[n+1];
         Arrays.fill(dp, INF);
-        dp[0] = arr[0];
+        dp[0] = 0;
         for (int i = 1; i <= n; i++) {
-            for (int j = i; j > 0; j--) dp[i] = Math.min(dp[i], dp[i-j]+arr[j]);
+            int card = arr[i];
+            for (int j = i; j <= n; j++) {
+                dp[j] = Math.min(dp[j], dp[j-i]+card);
+            }
         }
-
+        
         System.out.print(dp[n]);
     }
 
