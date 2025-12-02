@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, p=10_007, ans;
+    private static int n, ans, p = 10_007;
     private static int[][] dp;
     
     public static void main(String... args) throws IOException {
@@ -12,14 +12,16 @@ public class Main {
         dp = new int[n+1][10];
         Arrays.fill(dp[1], 1);
         for (int i = 2; i <= n; i++) {
-            for (int j = 0; j < 10; j++) {
-                for (int k = 0; k <= j; k++) dp[i][j] += (dp[i-1][k] % p);
+            int ps = 0;
+            for (int j = 0; j <= 9; j++) {
+                ps = (ps + dp[i-1][j]) % p;
+                dp[i][j] = ps;
             }
         }
         
-        for (int i = 0; i < 10; i++) ans += dp[n][i] % p;
-
-        System.out.print(ans%p);
+        for (int i = 0; i <= 9; i++) ans = (ans + dp[n][i]) % p;
+        
+        System.out.print(ans);
     }
 
     public static int readInt() throws IOException {
