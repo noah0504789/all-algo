@@ -9,16 +9,15 @@ public class Main {
         k = readInt();
         
         a = 1;
-        b = 0;
-        for (int i = 0; i < k; i++) {
+        for (int i = 1; i <= k; i++) {
             na = b;
-            nb = a+b;
+            nb = a + b;
             a = na;
             b = nb;
         }
-
+            
         System.out.print(a + " " + b);
-    }   
+    }
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
