@@ -2,41 +2,40 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static BufferedWriter bw;
-
-    private static final int MOD = 9901;
-    private static int[][] dp;
-    private static int n, ans;
-
+    
+    private static int n, ans, p = 9_901;
+    private static int[][] dp; 
+    
     public static void main(String... args) throws IOException {
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
         n = readInt();
-
+        
         dp = new int[n+1][3];
-        dp[1][0] = dp[1][1] = dp[1][2] = 1;
-        for (int i = 2; i <= n; i++) {
-            dp[i][0] = (dp[i-1][0] + dp[i-1][1] + dp[i-1][2]) % MOD;
-            dp[i][1] = (dp[i-1][0] + dp[i-1][2]) % MOD;
-            dp[i][2] = (dp[i-1][0] + dp[i-1][1]) % MOD;
+        dp[0][0] = 1;        
+        
+        for (int i = 1; i <= n; i++) {
+            dp[i][0] = (dp[i-1][0] + dp[i-1][1] + dp[i-1][2]) % p;
+            dp[i][1] = (dp[i-1][0] + dp[i-1][2]) % p;
+            dp[i][2] = (dp[i-1][0] + dp[i-1][1]) % p;
         }
-
-        ans = (dp[n][0] + dp[n][1] + dp[n][2]) % MOD;
-
-        bw.write(ans+"");
-        bw.flush();
+        
+        System.out.print((dp[n][0] + dp[n][1] + dp[n][2]) % p);
     }
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
+        boolean negative = false;       
 
         while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
         while (c >= '0' && c <= '9') {
             r *= 10;
             r += c - '0';
             c = System.in.read();
         }
 
-        return r;
+        return negative ? -r : r;
     }
 }
