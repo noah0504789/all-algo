@@ -3,29 +3,18 @@ import java.util.*;
 
 public class Main {
     
-    private static final int p = 15_746;
-    private static int n, v1, v2, sum;
-    private static int[] dp;
+    private static int n, p = 15_746;
+    private static long[] dp;
     
     public static void main(String... args) throws IOException {
         n = readInt();
-        if (n <= 2) {
-            System.out.print(n);
-            return;
-        }         
+        dp = new long[Math.max(2, n)+1];
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= n; i++) dp[i] = (dp[i-1] + dp[i-2]) % p;
         
-        v1 = 1;
-        v2 = 2;
-        
-        for (int i = 2; i < n; i++) {            
-            sum = (v1+v2) % p;            
-            v1 = v2;
-            v2 = sum;            
-        }
-
-        System.out.print(sum);
+        System.out.print(dp[n]);
     }
-
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
