@@ -3,20 +3,24 @@ import java.util.*;
 
 public class Main {
     
-    private static int n;
+    private static final String w = "SK", l = "CY";
+    private static int n;    
+    private static Boolean[] win;
     
     public static void main(String... args) throws IOException {
         n = readInt();
+        win = new Boolean[n+1];
+        //win[1] = win[3] = true;
         
-        System.out.print(solve(0, 0));
+        System.out.print(dfs(1, true) ? w : l);
     }
     
-    private static String solve(int i, int flip) {
-        if (i == n-1) return flip == 0 ? "SK" : "CY";
+    private static boolean dfs(int i, boolean res) {
+        if (i == n) return res;
+        if (i > n) return false;
+        if (win[i] != null) return win[i];
         
-        if (n-i > 3) return solve(i+3, flip^1);
-        
-        return solve(i+1, flip^1);
+        return win[i] = dfs(i+1, !res) || dfs(i+3, !res);
     }
 
     public static int readInt() throws IOException {
