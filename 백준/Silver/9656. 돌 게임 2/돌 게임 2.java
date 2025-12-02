@@ -4,11 +4,22 @@ import java.util.*;
 public class Main {
     
     private static int n;
+    private static Boolean[] win;
     
     public static void main(String... args) throws IOException {
-        n = readInt();
-
-        System.out.print(n%2 == 1 ? "CY" : "SK");
+        n = readInt();        
+        
+        win = new Boolean[n];
+        
+        System.out.print(dfs(0, true) ? "SK" : "CY");
+    }
+    
+    private static boolean dfs(int i, boolean res) {
+        if (i == n) return res;
+        if (i > n) return false;
+        if (win[i] != null) return win[i];
+        
+        return win[i] = dfs(i+1, !res) || dfs(i+3, !res);
     }
 
     public static int readInt() throws IOException {
