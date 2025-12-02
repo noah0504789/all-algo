@@ -2,62 +2,51 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static BufferedWriter bw;
-
-    private static List<Integer> list;
-
-    private static int[] boxes;
-    private static int n;
-
+    
+    private static int n, len;
+    private static int[] arr, tails;
+    
     public static void main(String... args) throws IOException {
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
         n = readInt();
-        boxes = new int[n];
-        for (int i = 0; i < n; i++) boxes[i] = readInt();
-
-        list = new ArrayList<>();
-
-
-
-        bw.write(lis()+"");
-        bw.flush();
-    }
-
-    private static long lis() {
-        list.clear();
-
-        for (int box : boxes) {
-            int pos = lowerbound(0, list.size(), box);
-
-            if (pos < 0) pos = -(pos+1);
-            if (pos >= list.size()) list.add(box);
-            else list.set(pos, box);
-        }
-
-        return list.size();
-    }
-
-    private static int lowerbound(int l, int r, int key) {
-        while (l < r) {
-            int mid = (l+r)/2;
-            if (list.get(mid) < key) l = mid+1;
-            else r = mid;
-        }
+        arr = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = readInt();
         
+        tails = new int[n];
+        for (int i = 0; i < n; i++) {
+            int x = arr[i];
+            int pos = lowerBound(len, x);
+            tails[pos] = x;
+            if (pos == len) len++;
+        } 
+        
+        System.out.print(len);
+    }
+    
+    private static int lowerBound(int r, int x) {
+        int l = 0;
+        while (l < r) {
+            int m = (l+r)>>>1;
+            if (tails[m]>=x) r = m;
+            else l = m+1;
+        }
         return l;
     }
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
+        boolean negative = false;       
 
         while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
         while (c >= '0' && c <= '9') {
             r *= 10;
             r += c - '0';
             c = System.in.read();
         }
 
-        return r;
+        return negative ? -r : r;
     }
 }
