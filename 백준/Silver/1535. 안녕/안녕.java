@@ -2,49 +2,42 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static BufferedWriter bw;
-
-    private static int[][] dp;
-    private static int[] hp, joy;
+    
     private static int n;
-
+    private static int[] joy, stamina, dp;
+    
     public static void main(String... args) throws IOException {
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
         n = readInt();
-
-        hp = new int[n+1];
-        for (int i = 1; i <= n; i++) hp[i] = readInt();
-
-        joy = new int[n+1];
-        for (int i = 1; i <= n; i++) joy[i] = readInt();
-
-        dp = new int[n+1][100];
-        for (int i = 1; i <= n; i++) {
-            int ch = hp[i], cj = joy[i];
-
-            for (int j = 1; j < 100; j++) {
-                dp[i][j] = Math.max(dp[i][j-1], dp[i-1][j]);
-
-                if (j >= ch) dp[i][j] = Math.max(dp[i][j], dp[i-1][j-ch] + cj);
-            }
-        }
-
-        bw.write(dp[n][99]+"");
-
-        bw.flush();
+        stamina = new int[n];
+        for (int i = 0; i < n; i++) stamina[i] = readInt();
+        
+        joy = new int[n];
+        for (int i = 0; i < n; i++) joy[i] = readInt();                
+        
+        dp = new int[100];
+        for (int i = 0; i < n; i++) {
+            int j_ = joy[i], s = stamina[i];
+            for (int j = 99; j >= s; j--) dp[j] = Math.max(dp[j], dp[j-s] + j_);
+        }        
+        
+        System.out.print(dp[99]);
     }
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
+        boolean negative = false;       
 
         while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
         while (c >= '0' && c <= '9') {
             r *= 10;
             r += c - '0';
             c = System.in.read();
         }
 
-        return r;
+        return negative ? -r : r;
     }
 }
