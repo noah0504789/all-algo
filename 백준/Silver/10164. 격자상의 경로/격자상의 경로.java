@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, m, k, a, b;
+    private static int n, m, k, kr, kc, a, b;
     private static int[][] dp;
     
     public static void main(String... args) throws IOException {
@@ -22,21 +22,22 @@ public class Main {
             System.out.print(dp[n][m]);
             return;  
         } 
-        
+        kr = (k-1) / m + 1;
+        kc = (k-1) % m + 1;
         dp = new int[n+1][m+1];        
-        for (int r = 1; r <= (k/m)+1; r++) {
-            for (int c = 1; c <= k%m; c++) {
+        for (int r = 1; r <= kr; r++) {
+            for (int c = 1; c <= kc; c++) {
                 if (r == 1 && c == 1) {dp[r][c] = 1; continue;}
                 dp[r][c] = dp[r-1][c] + dp[r][c-1];
             }
         }
         
-        a = dp[(k/m)+1][k%m];
+        a = dp[kr][kc];
         
         dp = new int[n+1][m+1];
-        for (int r = (k/m)+1; r <= n; r++) {
-            for (int c = k%m; c <= m; c++) {
-                if (r == (k/m)+1 && c == k%m) {dp[r][c] = 1; continue;}
+        for (int r = kr; r <= n; r++) {
+            for (int c = kc; c <= m; c++) {
+                if (r == kr && c == kc) {dp[r][c] = 1; continue;}
                 dp[r][c] = dp[r-1][c] + dp[r][c-1];
             }
         }
