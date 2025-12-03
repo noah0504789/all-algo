@@ -4,18 +4,25 @@ import java.util.*;
 public class Main {
     
     private static int n;
-    private static long[] w;
+    private static long[] dp;
     
     public static void main(String... args) throws IOException {
         n = readInt();
+        if (n == 1) {
+            System.out.print(4);
+            return;
+        }
         
-        w = new long[Math.max(3, n+1)+1];
-        w[1] = 1;
-        w[2] = 1;
-        w[3] = 2;
-        for (int i = 4; i <= n+1; i++) w[i] = w[i-2] + w[i-1];
+        if (n == 2) {
+            System.out.print(6);
+            return;
+        }
         
-        System.out.print(w[n] * 2 + w[n+1] * 2);
+        dp = new long[Math.max(2, n)+1];
+        dp[1] = dp[2] = 1;
+        for (int i = 3; i <= n; i++) dp[i] = dp[i-1] + dp[i-2];
+        
+        System.out.print(dp[n]*4 + dp[n-1]*2);
     }
 
     public static int readInt() throws IOException {
