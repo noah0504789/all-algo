@@ -2,62 +2,57 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static BufferedWriter bw;
-
-    private static List<Integer> list;
-    private static int[] dp;
-    private static int n, s, m, v, ans, vol1, vol2;
-
+    
+    private static int n, s, m, ans;
+    private static int[] v;
+    private static boolean[][] dp;
+    
     public static void main(String... args) throws IOException {
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
         n = readInt();
         s = readInt();
         m = readInt();
-
-        dp = new int[m+1];
-        Arrays.fill(dp, -1);
-        dp[s] = 0;
-
-        list = new ArrayList<>();
-
-        ans = -1;
-
-        for (int i = 1; i <= n; i++) {
-            v = readInt();
-
-            for (int j = 0; j <= m; j++) {
-                if (dp[j] != i-1) continue;
-
-                vol1 = j+v;
-                vol2 = j-v;
-
-                if (vol1 <= m) list.add(vol1);
-                if (vol2 >= 0) list.add(vol2);
+        
+        v = new int[n];
+        for (int i = 0; i < n; i++) v[i] = readInt();
+        
+        dp = new boolean[n+1][m+1];
+        dp[0][s] = true;
+        
+        for (int i = 0; i < n; i++) {
+            for (int vol = 0; vol <= m; vol++) {
+                if (!dp[i][vol]) continue;
+                
+                int down = vol - v[i], up = vol + v[i];
+                if (down >= 0) dp[i+1][down] = true;
+                if (up <= m) dp[i+1][up] = true;
             }
-
-            for (int vol : list) {
-                dp[vol] = i;
-                if (i == n) ans = Math.max(ans, vol);
-            }
-
-            list.clear();
         }
-
-        bw.write(ans + "");
-        bw.flush();
+        ans = -1;
+        for (int vol = m; vol >= 0; vol--) {
+            if (dp[n][vol]) {
+                ans = vol;
+                break;
+            }
+        }
+        
+        System.out.print(ans);
     }
 
     public static int readInt() throws IOException {
         int r = 0, c = System.in.read();
+        boolean negative = false;       
 
         while (c <= ' ') c = System.in.read();
+        if (c == '-') {
+            negative = true;
+            c = System.in.read();
+        }
         while (c >= '0' && c <= '9') {
             r *= 10;
             r += c - '0';
             c = System.in.read();
         }
 
-        return r;
+        return negative ? -r : r;
     }
 }
