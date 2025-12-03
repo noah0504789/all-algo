@@ -3,40 +3,38 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, d, INF = Integer.MAX_VALUE/2;
-    private static List<int[]>[] road;
-    private static long[] dp;
+    private static int n, d, INF = Integer.MAX_VALUE;
+    private static int[] dp;
+    private static int[][] roads;
+    private static List<Integer>[] adj;
     
     public static void main(String... args) throws IOException {
         n = readInt();
         d = readInt();
         
-        road = new ArrayList[d+1];
+        roads = new int[d+1][d+1];
+        adj = new ArrayList[d+1];
         for (int i = 0; i < n; i++) {
             int s = readInt();
             int e = readInt();
-            int v = readInt();
-            
-            if (e > d) continue;            
-            if (road[e] == null) road[e] = new ArrayList<>();
-            
-            road[e].add(new int[]{s, v});
-        }
+            int dist = readInt();
+            if (s > d || e > d) continue;
                 
-        dp = new long[d+1];
-        Arrays.fill(dp, INF);
-        dp[0] = 0L;
-        
-        for (int e = 1; e <= d; e++) {
-            dp[e] = Math.min(dp[e], dp[e-1]+1);
-            if (road[e] == null) continue;
-            
-            for (int[] r : road[e]) {
-                int s= r[0], v = r[1];
-                dp[e] = Math.min(dp[e], dp[s]+v);
-            }
+            roads[s][e] = roads[s][e] == 0 ? dist : Math.min(roads[s][e], dist);
+            if (adj[e] == null) adj[e] = new ArrayList<>();
+            adj[e].add(s);
         }
-
+        
+        dp = new int[d+1];
+        for (int i = 0; i <= d; i++) {
+            dp[i] = i == 0 ? 0 : dp[i-1] + 1;
+            
+            if (adj[i] == null) continue;
+            for (int prev : adj[i]) {
+                dp[i] = Math.min(dp[i], dp[prev] + roads[prev][i]);
+            }
+        }        
+        
         System.out.print(dp[d]);
     }
 
