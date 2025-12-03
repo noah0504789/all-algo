@@ -4,26 +4,24 @@ import java.util.*;
 public class Main {
     
     private static int n, INF = Integer.MAX_VALUE;
-    private static int[] arr;
-    private static long[] dp;
+    private static int[] arr, dp;
     
     public static void main(String... args) throws IOException {
         n = readInt();
         arr = new int[n+1];
-        for (int i = 0; i < n; i++) arr[i] = readInt();
-        dp = new long[n];
-        Arrays.fill(dp, INF);
-        dp[0] = 0;
+        for (int i = 1; i <= n; i++) arr[i] = readInt();
         
-        for (int e = 0; e < n; e++) {
-            for (int s = 0; s < e; s++) {
-                if (arr[s]+s < e) continue;
-                dp[e] = Math.min(dp[e], dp[s]+1);
-            }
-            if (dp[e] == INF) break;
+        dp = new int[n+1];
+        Arrays.fill(dp, INF);
+        dp[1] = 0;
+        for (int i = 1; i <= n; i++) {
+            int jump = arr[i];
+            for (int j = i+1; j <= i+jump; j++) {
+                if (j <= n && dp[i] != INF) dp[j] = Math.min(dp[j], dp[i] + 1);
+            }            
         }
-
-        System.out.print(dp[n-1] == INF ? -1 : dp[n-1]);
+        
+        System.out.print(dp[n] == INF ? -1 : dp[n]);
     }
 
     public static int readInt() throws IOException {
