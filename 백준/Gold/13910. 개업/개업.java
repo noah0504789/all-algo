@@ -33,9 +33,8 @@ public class Main {
         dp[0] = 0;
         
         Collections.sort(coins);        
-        for (int i = 1; i <= n; i++) {
-            for (int wok : coins) {
-                if (i<wok) continue;
+        for (int wok : coins) {
+            for (int i = wok; i <= n; i++) {
                 if (dp[i-wok] != INF) dp[i] = Math.min(dp[i], dp[i-wok]+1);
             }
         }
