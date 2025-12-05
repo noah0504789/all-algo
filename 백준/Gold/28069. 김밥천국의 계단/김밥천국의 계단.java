@@ -4,7 +4,7 @@ import java.util.*;
 public class Main {
     
     private static int n, k, INF = Integer.MAX_VALUE;
-    private static int[] dp;
+    private static int[] dp; // i칸까지 오르는데 걸리는 최소횟수
     
     public static void main(String... args) throws IOException {
         n = readInt();
@@ -12,12 +12,12 @@ public class Main {
         
         dp = new int[n+1];
         Arrays.fill(dp, INF);
-        dp[0] = 0;
+        dp[0] = 0;        
         for (int i = 0; i <= n; i++) {
             if (dp[i] == INF) continue;
             
-            if (i+1<=n) dp[i+1] = Math.min(dp[i+1], dp[i]+1);
-            if (i+i/2<=n) dp[i+i/2] = Math.min(dp[i+i/2], dp[i]+1);
+            if (i+1 <= n) dp[i+1] = Math.min(dp[i+1], dp[i]+1);
+            if (i+i/2 <= n) dp[i+i/2] = Math.min(dp[i+i/2], dp[i]+1);
         }
         
         System.out.print(dp[n] <= k ? "minigimbob" : "water");
