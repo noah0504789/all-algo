@@ -3,9 +3,9 @@ import java.util.*;
 
 public class Main {
     
-    private static int n, m, sum, INF = Integer.MAX_VALUE;
+    private static int n, m, INF = Integer.MAX_VALUE;
     private static int[] woks, dp;
-    private static boolean[] woks_possible;
+    private static boolean[] possible;
     private static List<Integer> coins;
     
     public static void main(String... args) throws IOException {
@@ -15,27 +15,30 @@ public class Main {
         woks = new int[m];
         for (int i = 0; i < m; i++) woks[i] = readInt();
         
-        woks_possible = new boolean[n+1];
-        for (int i = 0; i < m; i++) woks_possible[woks[i]] = true;
+        possible = new boolean[n+1];
         for (int i = 0; i < m-1; i++) {
             for (int j = i+1; j < m; j++) {
-                if (woks[i] + woks[j] <= n) woks_possible[woks[i] + woks[j]] = true;    
-            }            
+                possible[woks[i]] = true;
+                possible[woks[j]] = true;
+                
+                int v = woks[i] + woks[j];
+                if (v > n) continue;
+                
+                possible[v] = true;                
+            }
         }
-        
         coins = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
-            if (woks_possible[i]) coins.add(i);
+            if (possible[i]) coins.add(i);
         }
         
         dp = new int[n+1];
         Arrays.fill(dp, INF);
         dp[0] = 0;
-        
-        Collections.sort(coins);        
-        for (int wok : coins) {
-            for (int i = wok; i <= n; i++) {
-                if (dp[i-wok] != INF) dp[i] = Math.min(dp[i], dp[i-wok]+1);
+        for (int coin : coins) {
+            for (int i = coin; i <= n; i++) {
+                if (dp[i-coin] == INF) continue;
+                dp[i] = Math.min(dp[i], dp[i-coin]+1);
             }
         }
         
